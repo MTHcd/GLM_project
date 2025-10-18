@@ -3,8 +3,8 @@ title: "GLM_Project"
 author: "MC"
 date: "2025-09-29"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -14,47 +14,19 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Data
 
 ```{r cars}
-Dose=c(1.6907, 1.7242, 1.7552, 1.7842, 1.8113, 1.8369, 1.8610, 1.8839)
-NScarab=c(59,60,62,56,63,59,62,60)
-NTouch =c(6 ,13,18,28,52,53,61,60)
-
-X=Dose
-Y=NTouch
-n=NScarab
-p=Y/n
+x <- c(1.6907, 1.7242, 1.7552, 1.7842, 1.8113, 1.8369, 1.8610, 1.8839)
+n1 <- c(6 ,13,18,28,52,53,61,60)
+n0 <- c(59,60,62,56,63,59,62,60) - n1
 ```
 
-```{r, echo=FALSE}
-resu_logit <- glm(p ~ X, family = binomial(link="logit"))
-resu_logit
-```
-
-Rappels:
-
-Null Deviance : $$ -2 \times log(L_0)$$
-
-Residual Deviance : $$-2 \times log(L_1) $$ Deviance : $$ -2(log(L_{model}) - log(L_{saturated}))) $$
-
-```{r, echo=FALSE}
-resu_probit <- glm(p ~ X, family = binomial(link="probit"))
-resu_probit
-```
-
-```{r, echo=FALSE}
-resu_cloglog <- glm(p ~ X, family = binomial(link="cloglog"))
-resu_cloglog
-```
-
-```{r, echo=FALSE}
-library(fastglm)
-```
 
 # Logit Model
 
 $$log(\frac{p}{1-p})=\beta_0+\beta_1x$$
 $$p(y=1|x) = \frac{e^{\beta_0 + \beta_1x}}{1+e^{\beta_0 + \beta_1x}}$$
 
-## Likelihood function
+
+## Likelihood function:
 
 
 $$l((x_k,n_k)_k; \beta)=\prod_{j=1}^k(\prod_{i=1}^{n_j}(\pi_j)^{y_{ij}}(1-\pi_j)^{1-y_{ij}})$$
@@ -68,191 +40,134 @@ $$l((x_k,n_k)_k; \beta)=\prod_{j=1}^k(\frac{e^{\beta_0+\beta_1x_j}}{1 + e^{\beta
 
 $$l((x_k,n_k)_k; \beta) =\prod_{j=1}^k(\frac{e^{\beta_0+\beta_1x_j}}{1 + e^{\beta_0+\beta_1x_j}})^{n_j^1}(\frac{1}{1 + e^{\beta_0+\beta_1x_j}})^{n_j^0}$$
 $$L((x_k,n_k)_k; \beta) = \sum_{j=1}^klog((\frac{e^{\beta_0+\beta_1x_j}}{1 + e^{\beta_0+\beta_1x_j}})^{n_j^1}(\frac{1}{1 + e^{\beta_0+\beta_1x_j}})^{n_j^0})$$
-## Log-Likelihood function:
 
-$$L((x_k,n_k)_k; \beta) = \sum_{j=1}^klog((\frac{e^{\beta_0+\beta_1x_j}}{1 + e^{\beta_0+\beta_1x_j}})^{n_j^1})+ log((\frac{1}{1 + e^{\beta_0+\beta_1x_j}})^{n_j^0})$$
+## Log-likelihood function:
+
+$$L((x_k,n_k)_k; \beta) = \sum_{j=1}^klog((\frac{e^{\beta_0+\beta_1x_j}}{1 + e^{\beta_0+\beta_1x_j}})^{n_j^1}) + log((\frac{1}{1 + e^{\beta_0+\beta_1x_j}})^{n_j^0})$$
 
 $$L((x_k,n_k)_k; \beta) = -(\sum_{j=1}^kn_j^1log(1 + e^{-(\beta_0+\beta_1x_j)}) + {n_j^0}((\beta_0+\beta_1x_j)+log(1 + e^{-(\beta_0+\beta_1x_j)}))$$
 
 ## Score function:
 
-$$U(\beta) = \sum_{j=1}^k(n^1_j(1-\pi_j) +n^0_j\pi_j, x_j(n^1_j(1-\pi_j) +n^0_j\pi_j))$$
+$$U(\beta) = \sum_{j=1}^k(n^1_j(1-\pi_j) -n^0_j\pi_j, x_j(n^1_j(1-\pi_j) -n^0_j\pi_j)$$
+
 
 ## Fisher Information Matrix:
 
-$$I_{11}=-\frac{\partial^2 L}{\partial \beta_0^2} = -(\sum_{j=1}^kn^1_j \frac{\partial(1-\pi_j)}{\partial \beta_0} + n^0_j \frac{\partial(\pi_j)}{\partial \beta_0})$$
-$$I_{22}=-\frac{\partial^2 L}{\partial \beta_1^2} = -(\sum_{j=1}^kx_j(n^1_j \frac{\partial(1-\pi_j)}{\partial \beta_1} + n^0_j \frac{\partial(\pi_j)}{\partial \beta_1}))$$
+$$I_{11}=-\frac{\partial^2 L}{\partial \beta_0^2} = \frac{\partial L}{\partial \beta_0})$$
+$$I_{22}=-\frac{\partial^2 L}{\partial \beta_1^2} = \sum_{j=1}^k x_j^2(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)})$$
 
-$$I_{12}=-\frac{\partial^2 L}{\partial \beta_0 \beta_1} = -(\sum_{j=1}^k(n^1_j \frac{\partial(1-\pi_j)}{\partial \beta_1} + n^0_j \frac{\partial(\pi_j)}{\partial \beta_1}))$$
+$$I_{12}=-\frac{\partial^2 L}{\partial \beta_0 \beta_1} = \sum_{j=1}^k x_j(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)})$$
 
 $$I_{21}=I_{12}$$
 
+$$I(\beta)^{-1} =  \frac{\begin{bmatrix}\sum_{j=1}^k x_j^2(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)} &-\sum_{j=1}^k x_j(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)})\\-\sum_{j=1}^k x_j(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)})& \sum_{j=1}^k(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)}) 
+\end{bmatrix}}{(\sum_{j=1}^k x_j^2(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)}))(\sum_{j=1}^k(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)})) - (\sum_{j=1}^k x_j(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)}))^2}$$
 
-$$I(\beta) =  \begin{bmatrix}  & \\
- & 
-\end{bmatrix}$$
 
-$$I(\beta)^{-1} =  \frac{\begin{bmatrix} & \\
- &
-\end{bmatrix}}{()() - ()^2}$$
+## EMV Algorithm's Toolbox:
 
+$$U(\beta) = \sum_{j=1}^k(n^1_j(1-\pi_j) -n^0_j\pi_j, x_j(n^1_j(1-\pi_j) -n^0_j\pi_j)$$
+
+$$I(\beta)^{-1} =  \frac{\begin{bmatrix}\sum_{j=1}^k x_j^2(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)}) &-\sum_{j=1}^k x_j(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)})\\-\sum_{j=1}^k x_j(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)})& \sum_{j=1}^k(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)}) 
+\end{bmatrix}}{(\sum_{j=1}^k x_j^2(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)}))(\sum_{j=1}^k(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)})) - (\sum_{j=1}^k x_j(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)}))^2}$$
 
 ```{r, echo=FALSE}
-x<-c(1.6907, 1.7242, 1.7552, 1.7842, 1.8113, 1.8369, 1.8610, 1.8839)
+x <- c(1.6907, 1.7242, 1.7552, 1.7842, 1.8113, 1.8369, 1.8610, 1.8839)
+x_scaled <- (x-mean(x))/sd(x)
+n1 <- c(6 ,13,18,28,52,53,61,60)
+n0 <- c(59,60,62,56,63,59,62,60) - n1
+eps <- 1e-8
 
-step_F <- function(beta) {
-  com <- matrix(ncol=2, nrow=2)
-  com[1,1] <- sum(x^2*exp(beta[1] + beta[2]*x))
-  com[1,2] <- -sum(x*exp(beta[1] + beta[2]*x))
-  com[2,1] <- com[1,2]
-  com[2,2] <- sum(exp(beta[1] + beta[2]*x))
-  det <- (com[1,1]*com[2,2] - com[1,2]^2)
-  return(com/det)
+logistic <- function(z) {
+  return(ifelse(z >= 0, 
+                1 / (1 + exp(-z)), 
+                exp(z) / (1 + exp(z))))
 }
 
-step_S <- function(beta) {
+prob <- function(beta) {
+  z <- beta[1] + beta[2]*x_scaled
+  return(logistic(z))
+}
+
+U <- function(beta) {
   U <- matrix(nrow=2, ncol=1)
-  U[1] <- sum(1/(1+exp(beta[1]+beta[2]*x)))
-  U[2] <- sum(x/(1+exp(beta[1]+beta[2]*x)))
+  p <- prob(beta)
+  U[1] <- sum(n1*(1-p)-n0*p)
+  U[2] <- sum(x*(n1*(1-p)-n0*p))
   return(U)
 }
 
-EMV_algo <- function(beta) {
-  return(beta + step_F(beta)%*%step_S(beta))
+I <- function(beta) {
+  com <- matrix(ncol=2, nrow=2)
+  p <- prob(beta)
+  com[1,1] <- sum(x^2*(n1*(1-p)/(p+eps) - (n0*p)/(1-p+eps)))
+  com[1,2] <- -sum(x*(n1*(1-p)/(p+eps) - n0*p/(1-p+eps)))
+  com[2,1] <- com[1,2]
+  com[2,2] <- sum(n1*(1-p)/(p+eps) - n0*p/(1-p+eps))
+  det <- (com[1,1]*com[2,2] - com[1,2]^2)
+  if (abs(det) < 1e-6) {
+    warning("Déterminant trop petit, inversion instable")
+    det <- diag(2)*1e6
+  }
+  return(com/(det+eps))
 }
-N <- 100
+
+log_lik <- function(beta) {
+  p <- prob(beta)
+  return(sum(n1*log(p+eps)+ n0*log(1-p+eps)))
+}
+
+EMV_algo <- function(beta) {
+  ll_old <- log_lik(beta)
+  step <- 1
+  for (i in 1:10) {
+    beta_check <- beta + step*(I(beta)%*%U(beta))
+    ll_new <- log_lik(beta_check)
+    if (all(is.finite(beta_check)) && ll_new >= ll_old) {
+      break
+    }
+    step <- step / 2
+  }
+  beta_star <- beta_check
+  return(beta_star)
+}
+N <- 10000
 beta_H1 <- rep(NA, N)
-beta_H1[1] <- 1
+beta_H1[1] <- -60
 beta_H2 <- rep(NA, N)
-beta_H2[1] <- 2
+beta_H2[1] <- 34
 for (j in 2:N) {
-  beta_H1[j] <- EMV_algo(c(beta_H1[j-1],beta_H2[j-1]))[1]
-  beta_H2[j] <- EMV_algo(c(beta_H1[j-1],beta_H2[j-1]))[2]
+  resu <- EMV_algo(c(beta_H1[j-1],beta_H2[j-1]))
+  beta_H1[j] <- resu[1]
+  beta_H2[j] <- resu[2]
 }
 c(beta_H1[N], beta_H2[N])
 ```
 
 ```{r, echo=FALSE}
-x<-c(1.6907, 1.7242, 1.7552, 1.7842, 1.8113, 1.8369, 1.8610, 1.8839)
+x <- c(1.6907, 1.7242, 1.7552, 1.7842, 1.8113, 1.8369, 1.8610, 1.8839)
+n1 <- c(6 ,13,18,28,52,53,61,60)
+n0 <- c(59,60,62,56,63,59,62,60) - n1
+set.seed(123)
+prob <- function(beta) {
+  return(exp(beta[1]+beta[2]*x)/(1+exp(beta[1]+beta[2]*x)))
+}
 
 neg_lk <- function(beta) {
-  return(-sum(beta[1]+beta[2]*x - log(1+exp(beta[1]+beta[2]*x))))
-}
-
-emv <- nlm(neg_lk, p=c(1,2))
-emv
-```
-
-# Probit Model
-
-## Log-Likelihood function:
-
-$$L(X,\beta_0, \beta_1) = \sum_{i=1}^n log(\int_{-\infty}^{\beta_0 + \beta_1x_i}\frac{e^{\frac{-z^2}{2}}}{\sqrt{2\pi}})$$
-
-## Score function:
-
-$$U(\beta) = (\sum_{i=1}^n \frac{e^{-\frac{1}{2}}}{\sqrt{2\pi}\Phi(\beta_0+\beta_1x_i)}, \sum_{i=1}^n\frac{e^{-\frac{-x_i^2}{2}}}{\sqrt{2\pi}\Phi(\beta_0 + \beta_1 x_i)})$$
-
-## Fisher Information Matrix:
-
-$$I(\beta) =  \begin{bmatrix} \sum_{i=1}^n\frac{e^{-1}}{2\pi\Phi(\beta_0 + \beta_1 x_i)^2} & \sum_{i=1}^n\frac{e^{-\frac{1}{2}(x_i^2+1)}}{2\pi\Phi(\beta_0 + \beta_1 x_i)^2}\\
-\sum_{i=1}^n\frac{e^{-\frac{1}{2}(x_i^2+1)}}{2\pi\Phi(\beta_0 + \beta_1 x_i)^2} & \sum_{i=1}^n\frac{e^{-x_i^2}}{2\pi\Phi(\beta_0 + \beta_1 x_i)^2}
-\end{bmatrix}$$
-
-$$I(\beta)^{-1} =  \frac{\begin{bmatrix} \sum_{i=1}^n\frac{e^{-x_i^2}}{2\pi\Phi(\beta_0 + \beta_1 x_i)^2} & -\sum_{i=1}^n\frac{e^{-\frac{1}{2}(x_i^2+1)}}{2\pi\Phi(\beta_0 + \beta_1 x_i)^2}\\
--\sum_{i=1}^n\frac{e^{-\frac{1}{2}(x_i^2+1)}}{2\pi\Phi(\beta_0 + \beta_1 x_i)^2} &  \sum_{i=1}^n\frac{e^{-1}}{2\pi\Phi(\beta_0 + \beta_1 x_i)^2}
-\end{bmatrix}}{(\sum_{i=1}^n\frac{e^{-1}}{2\pi\Phi(\beta_0 + \beta_1 x_i)^2})(\sum_{i=1}^n\frac{e^{-x_i^2}}{2\pi\Phi(\beta_0 + \beta_1 x_i)^2}) - (\sum_{i=1}^n\frac{e^{-\frac{1}{2}(x_i^2+1)}}{2\pi\Phi(\beta_0 + \beta_1 x_i)^2})^2}$$
-
-```{r, echo=FALSE}
-x<-c(1.6907, 1.7242, 1.7552, 1.7842, 1.8113, 1.8369, 1.8610, 1.8839)
-
-step_F <- function(beta) {
-  com <- matrix(ncol=2, nrow=2)
-  com[1,1] <- sum(x^2*exp(beta[1] + beta[2]*x))
-  com[1,2] <- -sum(x*exp(beta[1] + beta[2]*x))
-  com[2,1] <- com[1,2]
-  com[2,2] <- sum(exp(beta[1] + beta[2]*x))
-  det <- (com[1,1]*com[2,2] - com[1,2]^2)
-  return(com/det)
-}
-
-step_S <- function(beta) {
-  U <- matrix(nrow=2, ncol=1)
-  U[1] <- sum(1/(1+exp(beta[1]+beta[2]*x)))
-  U[2] <- sum(x/(1+exp(beta[1]+beta[2]*x)))
-  return(U)
-}
-
-EMV_algo <- function(beta) {
-  return(beta + step_F(beta)%*%step_S(beta))
+  return(-sum(n1*log(prob(beta))+n0*log(1-prob(beta))))
 }
 N <- 100
-beta_H1 <- rep(NA, N)
-beta_H1[1] <- 2.5
-beta_H2 <- rep(NA, N)
-beta_H2[1] <- 5
-for (j in 2:N) {
-  beta_H1[j] <- EMV_algo(c(beta_H1[j-1],beta_H2[j-1]))[1]
-  beta_H2[j] <- EMV_algo(c(beta_H2[j-1],beta_H2[j-1]))[2]
+resu1 <- rep(NA, N)
+resu2 <- rep(NA, N)
+for (j in 1:N) {
+  param <- runif(2, -100, 100)
+  emv <- nlm(neg_lk, p=param)
+  resu1[j] <- emv$estimate[1]
+  resu2[j] <- emv$estimate[2]
 }
-c(beta_H1[N], beta_H2[N])
-```
-
-# c-loglog Model
-
-## Log-Likelihood function:
-
-$$L(X,\beta_0, \beta_1) = \sum_{i=1}^n log(1 - e^{-e^{(\beta_0 + \beta_1 x_i)}})$$
-
-## Score function:
-
-$$U(\beta) = (\sum_{i=1}^n\frac{e^{-e^{(\beta_0 + \beta_1 x_i)}+(\beta_0 + \beta_1 x_i)}}{(1 - e^{-e^{\beta_0 + \beta_1 x_i}})}, \sum_{i=1}^n\frac{x_ie^{-e^{(\beta_0 + \beta_1 x_i)}+(\beta_0 + \beta_1 x_i)}}{(1 - e^{-e^{\beta_0 + \beta_1 x_i}})})$$
-
-## Fisher Information Matrix:
-
-$$I(\beta) =  \begin{bmatrix} \sum_{i=1}^n\frac{(e^{-e^{(\beta_0 + \beta_1 x_i)}+(\beta_0 + \beta_1 x_i)})(e^{-e^{\beta_0 + \beta_1 x_i}} + e^{\beta_0 + \beta_1 x_i} - 1)}{(1 - e^{-e^{\beta_0 + \beta_1 x_i}})^2} & \sum_{i=1}^n\frac{x_i(e^{-e^{(\beta_0 + \beta_1 x_i)}+(\beta_0 + \beta_1 x_i)})(e^{-e^{\beta_0 + \beta_1 x_i}} + e^{\beta_0 + \beta_1 x_i} - 1)}{(1 - e^{-e^{\beta_0 + \beta_1 x_i}})^2}\\
-\sum_{i=1}^n\frac{x_i(e^{-e^{(\beta_0 + \beta_1 x_i)}+(\beta_0 + \beta_1 x_i)})(e^{-e^{\beta_0 + \beta_1 x_i}} + e^{\beta_0 + \beta_1 x_i} - 1)}{(1 - e^{-e^{\beta_0 + \beta_1 x_i}})^2} & \sum_{i=1}^n\frac{x_i^2(e^{-e^{(\beta_0 + \beta_1 x_i)}+(\beta_0 + \beta_1 x_i)})(e^{-e^{\beta_0 + \beta_1 x_i}} + e^{\beta_0 + \beta_1 x_i} - 1)}{(1 - e^{-e^{\beta_0 + \beta_1 x_i}})^2}
-\end{bmatrix}$$
-
-$$I(\beta) =  \begin{bmatrix} \sum_{i=1}^n\frac{(e^{-\mu_i(\beta)}\mu_i(\beta))(e^{-\mu_i(\beta)} + \mu_i(\beta) - 1)}{(1 - e^{-\mu_i(\beta)})^2} & \sum_{i=1}^n\frac{x_i(e^{-\mu_i(\beta)}\mu_i(\beta))(e^{-\mu_i(\beta)} + \mu_i(\beta) - 1)}{(1 - e^{-\mu_i(\beta)})^2}\\
-\sum_{i=1}^n\frac{x_i(e^{-\mu_i(\beta)}\mu_i(\beta))(e^{-\mu_i(\beta)} + \mu_i(\beta) - 1)}{(1 - e^{-\mu_i(\beta)})^2} & \sum_{i=1}^n\frac{x_i^2(e^{-\mu_i(\beta)}\mu_i(\beta))(e^{-\mu_i(\beta)} + \mu_i(\beta) - 1)}{(1 - e^{-\mu_i(\beta)})^2}
-\end{bmatrix}$$
-
-$$I(\beta)^{-1} =  \frac{\begin{bmatrix}  \sum_{i=1}^n\frac{x_i^2(e^{-\mu_i(\beta)}\mu_i(\beta))(e^{-\mu_i(\beta)} + \mu_i(\beta) - 1)}{(1 - e^{-\mu_i(\beta)})^2} & -\sum_{i=1}^n\frac{x_i(e^{-\mu_i(\beta)}\mu_i(\beta))(e^{-\mu_i(\beta)} + \mu_i(\beta) - 1)}{(1 - e^{-\mu_i(\beta)})^2}\\
- -\sum_{i=1}^n\frac{x_i(e^{-\mu_i(\beta)}\mu_i(\beta))(e^{-\mu_i(\beta)} + \mu_i(\beta) - 1)}{(1 - e^{-\mu_i(\beta)})^2}&  \sum_{i=1}^n\frac{(e^{-\mu_i(\beta)}\mu_i(\beta))(e^{-\mu_i(\beta)} + \mu_i(\beta) - 1)}{(1 - e^{-\mu_i(\beta)})^2}
-\end{bmatrix}}{(\sum_{i=1}^n\frac{x_i^2(e^{-\mu_i(\beta)}\mu_i(\beta))(e^{-\mu_i(\beta)} + \mu_i(\beta) - 1)}{(1 - e^{-\mu_i(\beta)})^2})(\sum_{i=1}^n\frac{(e^{-\mu_i(\beta)}\mu_i(\beta))(e^{-\mu_i(\beta)} + \mu_i(\beta) - 1)}{(1 - e^{-\mu_i(\beta)})^2}) - (\sum_{i=1}^n\frac{x_i(e^{-\mu_i(\beta)}\mu_i(\beta))(e^{-\mu_i(\beta)} + \mu_i(\beta) - 1)}{(1 - e^{-\mu_i(\beta)})^2})^2}$$
-
-```{r, echo=FALSE}
-x<-c(1.6907, 1.7242, 1.7552, 1.7842, 1.8113, 1.8369, 1.8610, 1.8839)
-
-step_F <- function(beta) {
-  com <- matrix(ncol=2, nrow=2)
-  com[1,1] <- sum(x^2*exp(beta[1] + beta[2]*x))
-  com[1,2] <- -sum(x*exp(beta[1] + beta[2]*x))
-  com[2,1] <- com[1,2]
-  com[2,2] <- sum(exp(beta[1] + beta[2]*x))
-  det <- (com[1,1]*com[2,2] - com[1,2]^2)
-  return(com/det)
-}
-
-step_S <- function(beta) {
-  U <- matrix(nrow=2, ncol=1)
-  U[1] <- sum(1/(1+exp(beta[1]+beta[2]*x)))
-  U[2] <- sum(x/(1+exp(beta[1]+beta[2]*x)))
-  return(U)
-}
-
-EMV_algo <- function(beta) {
-  return(beta + step_F(beta)%*%step_S(beta))
-}
-N <- 100
-beta_H1 <- rep(NA, N)
-beta_H1[1] <- 2.5
-beta_H2 <- rep(NA, N)
-beta_H2[1] <- 5
-for (j in 2:N) {
-  beta_H1[j] <- EMV_algo(c(beta_H1[j-1],beta_H2[j-1]))[1]
-  beta_H2[j] <- EMV_algo(c(beta_H2[j-1],beta_H2[j-1]))[2]
-}
-c(beta_H1[N], beta_H2[N])
+fit <- glm(cbind(n1, n0) ~ x, family = binomial(link = "logit"))
+coef(fit)
+mean(c(resu1 - coef(fit)[1],resu2-coef(fit)[2]))
+var(c(resu1 - coef(fit)[1],resu2-coef(fit)[2]))
 ```
