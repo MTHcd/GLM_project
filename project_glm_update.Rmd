@@ -1,0 +1,178 @@
+---
+title: "GLM_Project"
+author: "MC"
+date: "2025-09-29"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Data
+
+```{r}
+x <- c(1.6907, 1.7242, 1.7552, 1.7842, 1.8113, 1.8369, 1.8610, 1.8839)
+n1 <- c(6 ,13,18,28,52,53,61,60)
+n0 <- c(59,60,62,56,63,59,62,60) - n1
+```
+
+# Theoretical Part
+
+## Logit Model
+$$log(\frac{p}{1-p})=\beta_1+\beta_2x \Leftrightarrow p(y=1|x) = \frac{e^{\beta_1 + \beta_2x}}{1+e^{\beta_1 + \beta_2x}}$$
+### Likelihood function
+
+#### Likelihood for logit model
+
+$$l((x_k,n_k)_k; \beta)=\prod_{j=1}^k(\prod_{i=1}^{n_j}(\pi_j)^{y_{ij}}(1-\pi_j)^{1-y_{ij}})$$
+
+$$l((x_k,n_k)_k; \beta)=\prod_{j=1}^k(\prod_{i=1}^{n_j}(\frac{e^{\beta_1+\beta_2x_j}}{1 + e^{\beta_1+\beta_2x_j}})^{y_{ij}}(\frac{1}{1 + e^{\beta_1+\beta_2x_j}})^{1-y_{ij}})$$ 
+
+$$l((x_k,n_k)_k; \beta)=\prod_{j=1}^k(\frac{e^{\beta_1+\beta_2x_j}}{1 + e^{\beta_1+\beta_2x_j}})^{n_j^1}(\frac{1}{1 + e^{\beta_1+\beta_2x_j}})^{n_j^0}$$
+
+$$l((x_k,n_k)_k; \beta) =\prod_{j=1}^k(\frac{e^{\beta_1+\beta_2x_j}}{1 + e^{\beta_1+\beta_2x_j}})^{n_j^1}(\frac{1}{1 + e^{\beta_1+\beta_2x_j}})^{n_j^0}$$
+#### Log-Likelihood
+
+$$L((x_k,n_k)_k; \beta) = \sum_{j=1}^klog((\frac{e^{\beta_1+\beta_2x_j}}{1 + e^{\beta_1+\beta_2x_j}})^{n_j^1}) + log((\frac{1}{1 + e^{\beta_1+\beta_2x_j}})^{n_j^0})$$
+
+$$L((x_k,n_k)_k; \beta) = -(\sum_{j=1}^kn_j^1log(1 + e^{-(\beta_1+\beta_2x_j)}) + {n_j^0}((\beta_1+\beta_2x_j)+log(1 + e^{-(\beta_1+\beta_2x_j)}))$$
+
+
+### Score and Fisher Information
+
+#### Score Vector U
+
+$$U(\beta) = \sum_{j=1}^k(n^1_j(1-\pi_j) -n^0_j\pi_j, x_j(n^1_j(1-\pi_j) -n^0_j\pi_j)$$
+
+#### Fisher Information
+
+$$I_{11}=-\frac{\partial^2 L}{\partial \beta_1^2} = \frac{\partial L}{\partial \beta_1}$$
+$$I_{22}=-\frac{\partial^2 L}{\partial \beta_2^2} = \sum_{j=1}^k x_j^2(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)})$$
+
+$$I_{12}=-\frac{\partial^2 L}{\partial \beta_1 \beta_2} = \sum_{j=1}^k x_j(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)})$$
+
+$$I_{21}=I_{12}$$
+
+$$I(\beta)^{-1} =  \frac{\begin{bmatrix}\sum_{j=1}^k x_j^2(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)} &-\sum_{j=1}^k x_j(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)})\\-\sum_{j=1}^k x_j(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)})& \sum_{j=1}^k(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)}) 
+\end{bmatrix}}{(\sum_{j=1}^k x_j^2(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)}))(\sum_{j=1}^k(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)})) - (\sum_{j=1}^k x_j(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)}))^2}$$
+
+### Newton-Raphson Algorithm
+
+#### Recurrence relation for Beta estimation
+
+$$ \beta_{n+1} = \beta_n + (I(\beta_n))^{-1}U(\beta_n), n \ge 1$$
+
+#### Initial values
+
+
+### Adjustments Tests
+
+#### Deviance D
+
+#### Pearson Statistics
+
+#### Deviance Residuals
+
+#### Pearson Residuals
+
+
+## Probit Model
+$$p=\phi(\beta_1+\beta_2x)$$
+### Likelihood function
+
+#### Likelihood for logit model
+
+$$\prod_{j=1}^k(\Phi(x_j\beta)^{n^1_j}(1 - \Phi(x_j\beta))^{n^0_j}$$
+#### Log-Likelihood
+
+$$L(X,\beta_1, \beta_2) = \sum_{j=1}^k (n^1_jlog(\Phi(x_j\beta)) + n^0_jlog(1- \Phi(x_j\beta)))$$
+
+$$L(X,\beta_1, \beta_2) = \sum_{j=1}^k (n^1_jlog(\int_0^{\beta_0 + \beta_1x_j}\frac{e^{-\frac{x^2}{2}}}{\sqrt{2\pi}}dx) + n^0_jlog(1- \int_0^{\beta_0 + \beta_1x_j}\frac{e^{-\frac{x^2}{2}}}{\sqrt{2\pi}}dx))$$
+
+### Score and Fisher Information
+
+#### Score Vector U
+
+$$U(\beta) = (\sum_{j=1}^n \frac{e^{-\frac{1}{2}}(n^1_j -n^0_j)}{\sqrt{2\pi}\Phi(\beta_1+\beta_2x_j)}, \sum_{j=1}^n\frac{e^{-\frac{-x_j^2}{2}}(n^1_j -n^0_j)}{\sqrt{2\pi}\Phi(\beta_1 + \beta_2 x_j)})$$
+
+#### Fisher Information
+
+$$I(\beta) =  \begin{bmatrix} \sum_{j=1}^n\frac{e^{-1}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2} & \sum_{j=1}^n\frac{e^{-\frac{1}{2}(x_j^2+1)}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2}\\
+\sum_{j=1}^n\frac{e^{-\frac{1}{2}(x_j^2+1)}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2} & \sum_{j=1}^n\frac{e^{-x_j^2}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2}
+\end{bmatrix}$$
+
+$$I(\beta)^{-1} =  \frac{\begin{bmatrix} \sum_{j=1}^n\frac{e^{-1}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2} & -\sum_{j=1}^n\frac{e^{-\frac{1}{2}(x_j^2+1)}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2}\\
+-\sum_{j=1}^n\frac{e^{-\frac{1}{2}(x_j^2+1)}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2} & \sum_{j=1}^n\frac{e^{-x_j^2}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2}
+\end{bmatrix}}{(\sum_{j=1}^n\frac{e^{-1}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2})( \sum_{j=1}^n\frac{e^{-x_j^2}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2}) - (\sum_{j=1}^n\frac{e^{-\frac{1}{2}(x_j^2+1)}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2})^2}$$
+
+### Newton-Raphson Algorithm
+
+#### Recurrence relation for Beta estimation
+
+$$ \beta_{n+1} = \beta_n + (I(\beta_n))^{-1}U(\beta_n), n \ge 1$$
+
+#### Initial values
+
+
+### Adjustments Tests
+
+#### Deviance D
+
+#### Pearson Statistics
+
+#### Deviance Residuals
+
+#### Pearson Residuals
+
+
+## Cloglog Model
+$$log(\frac{p}{1-p})=\beta_1+\beta_2x \Leftrightarrow p(y=1|x) = \frac{e^{\beta_1 + \beta_2x}}{1+e^{\beta_1 + \beta_2x}}$$
+### Likelihood function
+
+#### Likelihood for logit model
+
+$$l((x_k,n_k)_k; \beta)= \prod_{j=1}^k (1 - e^{-e^{(\beta_1 + \beta_2 x_j)}})^{n^1_j}(e^{-e^{(\beta_1 + \beta_2 x_j)}})^{n^0_j}$$
+#### Log-Likelihood
+
+$$L(X,\beta_1, \beta_2) = log(\prod_{j=1}^k (1 - e^{-e^{(\beta_1 + \beta_2 x_j)}})^{n^1_j}(e^{-e^{(\beta_1 + \beta_2 x_j)}})^{n^0_j}) = \sum_{j=1}^k (n^1_j log(\pi_j) + n^0_jlog(1-\pi_j))$$
+### Score and Fisher Information
+
+#### Score Vector U
+
+$$U(\beta) = (\sum_{j=1}^k\frac{e^{-e^{(\beta_1 + \beta_2 x_j)}+(\beta_1 + \beta_2 x_j)}}{(1 - e^{-e^{\beta_1 + \beta_2 x_j}})}(n^1_j-n^0_j), \sum_{j=1}^k\frac{x_je^{-e^{(\beta_1 + \beta_2 x_j)}+(\beta_1 + \beta_2 x_j)}}{(1 - e^{-e^{\beta_1 + \beta_2 x_j}})}(n^1_j-n^0_j))$$
+#### Fisher Information
+
+$$I(\beta) =  \begin{bmatrix} \sum_{j=1}^k\frac{(e^{-e^{(\beta_1 + \beta_2 x_j)}+(\beta_1 + \beta_2 x_j)})(e^{-e^{\beta_1 + \beta_2 x_j}} + e^{\beta_1 + \beta_2 x_j} - 1)}{(1 - e^{-e^{\beta_1 + \beta_2 x_j}})^2}(n^1_j-n^0_j) & \sum_{j=1}^k\frac{x_j(e^{-e^{(\beta_1 + \beta_2 x_j)}+(\beta_1 + \beta_2 x_j)})(e^{-e^{\beta_1 + \beta_2 x_j}} + e^{\beta_1 + \beta_2 x_j} - 1)}{(1 - e^{-e^{\beta_1 + \beta_2 x_j}})^2}(n^1_j-n^0_j)\\
+\sum_{j=1}^k\frac{x_j(e^{-e^{(\beta_1 + \beta_2 x_j)}+(\beta_1 + \beta_2 x_j)})(e^{-e^{\beta_1 + \beta_2 x_j}} + e^{\beta_1 + \beta_2 x_j} - 1)}{(1 - e^{-e^{\beta_1 + \beta_2 x_j}})^2}(n^1_j-n^0_j) & \sum_{j=1}^k\frac{x_j^2(e^{-e^{(\beta_1 + \beta_2 x_j)}+(\beta_1 + \beta_2 x_j)})(e^{-e^{\beta_1 + \beta_2 x_j}} + e^{\beta_1 + \beta_2 x_j} - 1)}{(1 - e^{-e^{\beta_1 + \beta_2 x_j}})^2}(n^1_j-n^0_j)
+\end{bmatrix}$$
+
+
+$$I(\beta) =  \begin{bmatrix} \sum_{i=1}^n\frac{(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)}{(1 - e^{-\mu_j(\beta)})^2}(n^1_j - n^0_j) & \sum_{i=1}^n\frac{x_j(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)}{(1 - e^{-\mu_j(\beta)})^2}(n^1_j - n^0_j)\\
+\sum_{i=1}^n\frac{x_j(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)}{(1 - e^{-\mu_j(\beta)})^2}(n^1_j - n^0_j) & \sum_{i=1}^n\frac{x_j^2(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)}{(1 - e^{-\mu_j(\beta)})^2}(n^1_j - n^0_j)
+\end{bmatrix}$$
+
+$$I(\beta)^{-1} =  \frac{\begin{bmatrix} \sum_{j=1}^k\frac{x_j^2(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)}{(1 - e^{-\mu_j(\beta)})^2}(n^1_j - n^0_j) & -\sum_{j=1}^k\frac{x_j(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)}{(1 - e^{-\mu_j(\beta)})^2}(n^1_j - n^0_j)\\
+-\sum_{j=1}^k\frac{x_j(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)}{(1 - e^{-\mu_j(\beta)})^2}(n^1_j - n^0_j) &  \sum_{j=1}^k\frac{(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)}{(1 - e^{-\mu_j(\beta)})^2}(n^1_j - n^0_j)
+\end{bmatrix}}{(\sum_{j=1}^k\frac{x_j^2(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)(n^1_j - n^0_j)}{(1 - e^{-\mu_j(\beta)})^2})(\sum_{j=1}^k\frac{(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)(n^1_j - n^0_j)}{(1 - e^{-\mu_j(\beta)})^2}) - (\sum_{j=1}^k\frac{x_j(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)(n^1_j - n^0_j)}{(1 - e^{-\mu_j(\beta)})^2})^2}$$
+### Newton-Raphson Algorithm
+
+#### Recurrence relation for Beta estimation
+
+$$ \beta_{n+1} = \beta_n + (I(\beta_n))^{-1}U(\beta_n), n \ge 1$$
+
+#### Initial values
+
+
+### Adjustments Tests
+
+#### Deviance D
+
+#### Pearson Statistics
+
+#### Deviance Residuals
+
+#### Pearson Residuals
+
