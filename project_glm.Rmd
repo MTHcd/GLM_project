@@ -447,3 +447,5 @@ for (j in 2:N) {
   beta_H2[j] <- EMV_algo(c(beta_H2[j-1],beta_H2[j-1]))[2]
 }
 c(beta_H1[N], beta_H2[N])
+```
+
