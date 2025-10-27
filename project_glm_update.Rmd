@@ -79,7 +79,13 @@ $$ \beta_{n+1} = \beta_n + (I(\beta_n))^{-1}U(\beta_n), n \ge 1$$
 #### Initial values
 
 ```{r}
+# option glm
 
+# option log_odds ~ x with fit.lm
+
+# option small values
+
+# option visualization
 
 ```
 
@@ -164,6 +170,13 @@ $$ \beta_{n+1} = \beta_n + (I(\beta_n))^{-1}U(\beta_n), n \ge 1$$
 #### Initial values
 
 ```{r}
+# option glm
+
+# option log_odds ~ x with fit.lm
+
+# option small values
+
+# option visualization
 
 
 ```
@@ -252,6 +265,17 @@ $$ \beta_{n+1} = \beta_n + (I(\beta_n))^{-1}U(\beta_n), n \ge 1$$
 
 #### Initial values
 
+```{r}
+# option glm
+
+# option log_odds ~ x with fit.lm
+
+# option small values
+
+# option visualization
+
+
+```
 
 
 ### Adjustments Tests
@@ -318,10 +342,7 @@ df %>% ggplot(aes(x=x, y=p)) +
 
 #### Comments
 
-
-```{r}
-
-```
+The relation is increasing at different rate depending on x. It is a non linear relation.
 
 
 ### Parameter Estimation
