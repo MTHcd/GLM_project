@@ -1046,12 +1046,17 @@ EMV_algo_probit <- function(beta, n) {
   # if huge step but improvement, let it continue
   # if huge step but wrong movement, apply step size
   # if step size implies wrong movement, stop
-  new_beta <- beta + (1/1000)*(I_probit(beta)%*%U_probit(beta))
+  new_beta <- beta + (I_probit(beta))%*%(U_probit(beta))
   if (log_lik_prob(beta) < log_lik_prob(new_beta)) {
     return(new_beta)
   }
-  else {
-    return(beta)
+  else if (log_lik_prob(beta) > log_lik_prob(new_beta)){
+    new_beta <- beta + (1/1000)*(I_probit(beta))%*%(U_probit(beta))
+    if (log_lik_prob(beta) < log_lik_prob(new_beta)) {
+      return(new_beta)
+    } else {
+      return(beta)
+    }
   }
 }
 ##EMV call
@@ -1064,6 +1069,9 @@ resu_EMV_Batch_probit <- function(beta_H1, beta_H2) {
     beta_H1[j] <- resu[1]
     beta_H2[j] <- resu[2]
     param <- c(resu[1], resu[2])
+    if (beta_H1[j-1] == beta_H1[j] & beta_H2[j-1] == beta_H2[j]) {
+      return(c(beta_H1, beta_H2, z, j))
+    }
     z[j] <- log_lik_prob(param)
   }
   return(c(beta_H1, beta_H2, z))
@@ -1077,8 +1085,8 @@ eps <- 1e-8
 nu <- 1e-6
 N <- 50000
 ## initial values
-beta_1_init <- 0
-beta_2_init <- 0
+beta_1_init <- -34
+beta_2_init <- 20
 
 ## batch
 beta_H1 <- rep(NA, N)
