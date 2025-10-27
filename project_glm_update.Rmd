@@ -733,8 +733,6 @@ fig <- plot_ly() %>%
 
 fig
 
-
-
 ```
 
 
@@ -906,9 +904,7 @@ sum(residuals(resu, type="pearson")^2)
 
 ### Data visualization
 
-
 #### Plot
-
 
 ```{r}
 library(ggplot2)
@@ -961,6 +957,43 @@ The relation is increasing at different rate depending on x. It is a non linear 
 #### Newton-Raphson Algorithm Implementation up to Convergence
 
 ```{r}
+log_lik_prob <- function(beta) {
+  eps <- 1e-10
+  xbeta <- beta[1]+beta[2]*x
+  return(sum(n1*log(pnorm(xbeta)+eps)+n0*log(1-pnorm(xbeta)+eps)))
+}
+```
+
+
+```{r}
+library(ggplot2)
+b0_seq <- seq(-500, 500, length.out =1000)
+b1_seq <- seq(-500, 500, length.out =1000)
+ll_grid <- expand.grid(beta0 = b0_seq, beta1 = b1_seq)
+
+ll_grid$log_lik_prob <- apply(ll_grid, 1, function(row) log_lik_prob(c(row[1], row[2])))
+
+ggplot(ll_grid, aes(x = beta0, y = beta1, fill = log_lik_prob)) +
+  geom_tile() +
+  scale_fill_viridis_c() +
+  labs(title = "Log-vraisemblance sur la grille des paramètres")
+
+b0_seq <- seq(-40, 40, length.out =80)
+b1_seq <- seq(-40, 40, length.out =80)
+ll_grid <- expand.grid(beta0 = b0_seq, beta1 = b1_seq)
+
+ll_grid$log_lik_prob <- apply(ll_grid, 1, function(row) log_lik_prob(c(row[1], row[2])))
+
+ggplot(ll_grid, aes(x = beta0, y = beta1, fill = log_lik_prob)) +
+  geom_tile() +
+  scale_fill_viridis_c() +
+  labs(title = "Log-vraisemblance sur la grille des paramètres")
+
+
+```
+
+
+```{r}
 library(ggplot2)
 library(tidyr)
 library(dplyr)
@@ -968,177 +1001,84 @@ library(dplyr)
 ##data
 
 x <- c(1.6907, 1.7242, 1.7552, 1.7842, 1.8113, 1.8369, 1.8610, 1.8839)
-x_scaled <- (x-mean(x))/sd(x)
 n1 <- c(6 ,13,18,28,52,53,61,60)
 n0 <- c(59,60,62,56,63,59,62,60) - n1
 
 ## general
 
-logistic <- function(z) {
-  return(ifelse(z >= 0, 
-                1 / (1 + exp(-z)), 
-                exp(z) / (1 + exp(z))))
-}
-
 prob <- function(beta) {
   z <- beta[1] + beta[2]*x
-  return(logistic(z))
+  return(pnorm(z))
 }
 
-
-log_lik <- function(beta) {
-  p <- prob(beta)
-  return(sum(n1*log(p+eps)+ n0*log(1-p+eps)))
+log_lik_prob <- function(beta) {
+  eps <- 1e-10
+  xbeta <- beta[1]+beta[2]*x
+  return(sum(n1*log(pnorm(xbeta)+eps)+n0*log(1-pnorm(xbeta)+eps)))
 }
 
 ## Score
 
-U <- function(beta) {
+U_probit <- function(beta) {
   U <- matrix(nrow=2, ncol=1)
   p <- prob(beta)
-  U[1] <- sum(n1*(1-p)-n0*p)
-  U[2] <- sum(x*(n1*(1-p)-n0*p))
+  U[1] <- sum((n1-n0)*exp(-1/2)/(sqrt(2*pi)*p))
+  U[2] <- sum((n1-n0)*exp(-x^2/2)/(sqrt(2*pi)*p))
   return(U)
-}
-
-
-stoch_U <- function(beta, index) {
-  G <- matrix(nrow=2, ncol=1)
-  p <- prob(beta)
-  w1 <- n1*(1-p)-n0*p
-  w2 <- x*(n1*(1-p)-n0*p)
-  G[1] <- sum(w1[index])
-  G[2] <- sum(w2[index])
-  return(G)
 }
 
 ##Fisher Information
 
-stoch_I <- function(beta, index) {
+I_probit <- function(beta) {
   com <- matrix(ncol=2, nrow=2)
   p <- prob(beta)
-  v1 <- x^2*(n1*(1-p)/(p+eps) - (n0*p)/(1-p+eps))
-  v2 <- -x*n1*(1-p)/(p+eps) - n0*p/(1-p+eps)
-  v3 <- v2
-  v4 <- n1*(1-p)/(p+eps) - n0*p/(1-p+eps)
-  com[1,1] <- sum(v1[index])
-  com[1,2] <- sum(v2[index])
+  com[1,1] <- sum((n1-n0)*exp(-x^2)/(2*pi*p^2))
+  com[1,2] <- -sum((n1-n0)*exp(-(1/2)*(1+x^2))/(2*pi*p^2))
   com[2,1] <- com[1,2]
-  com[2,2] <- sum(v3[index])
-  det <- com[1,1]*com[2,2] - com[1,2]^2
-  if (abs(det) < 1e-6) {
-    warning("Déterminant trop petit, inversion instable")
-    det <- diag(2)*1e6
-  }
-  return(com/(det+eps))
-}
-
-I <- function(beta) {
-  com <- matrix(ncol=2, nrow=2)
-  p <- prob(beta)
-  com[1,1] <- sum(x^2*(n1*(1-p)/(p+eps) - (n0*p)/(1-p+eps)))
-  com[1,2] <- -sum(x*(n1*(1-p)/(p+eps) - n0*p/(1-p+eps)))
-  com[2,1] <- com[1,2]
-  com[2,2] <- sum(n1*(1-p)/(p+eps) - n0*p/(1-p+eps))
+  com[2,2] <- sum((n1-n0)*exp(-1)/(2*pi*p^2))
   det <- (com[1,1]*com[2,2] - com[1,2]^2)
-  if (abs(det) < 1e-6) {
-    warning("Déterminant trop petit, inversion instable")
-    det <- diag(2)*1e6
-  }
   return(com/(det+eps))
 }
 
 ## EMV Algo
 
-EMV_algo <- function(beta, n) {
-  new_beta <- beta + (I(beta)%*%U(beta))
-  return(new_beta)
+EMV_algo_probit <- function(beta, n) {
+  # if huge step but improvement, let it continue
+  # if huge step but wrong movement, apply step size
+  # if step size implies wrong movement, stop
+  new_beta <- beta + (1/1000)*(I_probit(beta)%*%U_probit(beta))
+  if (log_lik_prob(beta) < log_lik_prob(new_beta)) {
+    return(new_beta)
+  }
+  else {
+    return(beta)
+  }
 }
-
-EMV_algo_lambda <- function(beta, n) {
-  ll_old <- log_lik(beta)
-  step <- 1
-  if (n > 20000) {
-    param <- sqrt(lambda/n)
-  } else {
-    param <- lambda/sqrt(n)
-  }
-  for (i in 1:10) {
-    beta_check <- beta + param*step*(I(beta)%*%U(beta))
-    ll_new <- log_lik(beta_check)
-    if (all(is.finite(beta_check)) && ll_new >= ll_old) {
-      break
-    }
-    step <- step / 2
-  }
-  beta_star <- beta_check
-  return(beta_star)
-}
-
-EMV_algo_stoch <- function(beta, n, index) {
-  ll_old <- log_lik(beta)
-  step <- 1
-  if (n > 20000) {
-    param <- sqrt(lambda/n)
-  } else {
-    param <- lambda/sqrt(n)
-  }
-  for (i in 1:10) {
-    beta_check <- beta + param*step*(stoch_I(beta, index)%*%stoch_U(beta, index))
-    ll_new <- log_lik(beta_check)
-    if (all(is.finite(beta_check)) && ll_new >= ll_old) {
-      break
-    }
-    step <- step / 2
-  }
-  beta_star <- beta_check
-  return(beta_star)
-}
-
 ##EMV call
 
-resu_EMV_Batch <- function(beta_H1, beta_H2) {
+resu_EMV_Batch_probit <- function(beta_H1, beta_H2) {
   z <- rep(NA, N)
-  z[1] <- log_lik(c(beta_H1[1], beta_H2[1]))
+  z[1] <- log_lik_prob(c(beta_H1[1], beta_H2[1]))
   for (j in 2:N) {
-  resu <- EMV_algo(c(beta_H1[j-1],beta_H2[j-1]),j)
-  beta_H1[j] <- resu[1]
-  beta_H2[j] <- resu[2]
-  param <- c(resu[1], resu[2])
-  z[j] <- log_lik(param)
-  
-  if (sqrt(sum((resu - c(beta_H1[j-1],beta_H2[j-1]))^2))< nu) {
-    message("Convergence atteinte à l'itération ", j)
-    break
-  }
+    resu <- EMV_algo_probit(c(beta_H1[j-1],beta_H2[j-1]),j)
+    beta_H1[j] <- resu[1]
+    beta_H2[j] <- resu[2]
+    param <- c(resu[1], resu[2])
+    z[j] <- log_lik_prob(param)
   }
   return(c(beta_H1, beta_H2, z))
 }
 
-resu_EMV_SG <- function(beta_H1S, beta_H2S) {
-  for (j in 2:N) {
-  index <- sample(length(x), floor(3*length(x)/4))
-  resuS <- EMV_algo_stoch(c(beta_H1S[j-1],beta_H2S[j-1]), j, index)
-  beta_H1S[j] <- resuS[1]
-  beta_H2S[j] <- resuS[2]
-  if (sqrt(sum((resuS - c(beta_H1S[j-1],beta_H2S[j-1]))^2))< nu) {
-    message("Convergence atteinte à l'itération ", j)
-    break
-    }
-  }
- return(c(beta_H1S, beta_H2S)) 
-}
 
 ####EMV calling
 
 ##params
 eps <- 1e-8
-lambda <- 1
 nu <- 1e-6
-N <- 10000
+N <- 50000
 ## initial values
-beta_1_init <- -56.5
-beta_2_init <- 32
+beta_1_init <- 0
+beta_2_init <- 0
 
 ## batch
 beta_H1 <- rep(NA, N)
@@ -1146,127 +1086,13 @@ beta_H1[1] <- beta_1_init
 beta_H2 <- rep(NA, N)
 beta_H2[1] <- beta_2_init
 
-EMV_output <- resu_EMV_Batch(beta_H1, beta_H2)
+EMV_output <- resu_EMV_Batch_probit(beta_H1, beta_H2)
 beta_H1 <- EMV_output[1:N]
 beta_H2 <- EMV_output[(N+1):(2*N)]
 
-## "mini batch"
-beta_H1S <- rep(NA, N)
-beta_H1S[1] <- beta_1_init
-beta_H2S <- rep(NA, N)
-beta_H2S[1] <- beta_2_init
-
-EMV_output_sg <- resu_EMV_SG(beta_H1S, beta_H2S)
-beta_H1S <- EMV_output_sg[1:N]
-beta_H2S <- EMV_output_sg[(N+1):(2*N)]
-
-###Plot
-
-df <- data.frame(
-  iter = 1:N,
-  beta_H1 = beta_H1,
-  beta_H2 = beta_H2,
-  beta_H1S = beta_H1S,
-  beta_H2S = beta_H2S
-)
-
-df_long <- df %>%
-  pivot_longer(cols = -iter, names_to = c("param", "method"), 
-               names_pattern = "(beta_H1|beta_H2)(S?)",
-               values_to = "value") %>%
-  mutate(
-    param = recode(param, beta_H1 = "Beta 1", beta_H2 = "Beta 2"),
-    method = ifelse(method == "S", "Stochastic", "Batch")
-  )
-
-ggplot(df_long, aes(x = iter, y = value, color = method)) +
-  geom_line() +
-  facet_wrap(~param, scales = "free_y") +
-  theme_minimal() +
-  labs(
-    title = "Convergence of Parameters Over Iterations",
-    x = "Iteration",
-    y = "Parameter Value",
-    color = "Algorithm"
-  )
+c(beta_H1[N], beta_H2[N])
 ```
 
-```{r}
-
-b0_seq <- seq(-1000, 500, length.out =1500)
-b1_seq <- seq(-500, 1000, length.out = 1500)
-ll_grid <- expand.grid(beta0 = b0_seq, beta1 = b1_seq)
-
-ll_grid$loglik <- apply(ll_grid, 1, function(row) log_lik(c(row[1], row[2])))
-
-library(ggplot2)
-ggplot(ll_grid, aes(x = beta0, y = beta1, fill = loglik)) +
-  geom_tile() +
-  scale_fill_viridis_c() +
-  labs(title = "Log-vraisemblance sur la grille des paramètres")
-
-```
-
-
-```{r}
-b0_seq <- seq(-5, 5, length.out =10)
-b1_seq <- seq(-5, 5, length.out = 10)
-ll_grid <- expand.grid(beta0 = b0_seq, beta1 = b1_seq)
-
-ll_grid$loglik <- apply(ll_grid, 1, function(row) log_lik(c(row[1], row[2])))
-
-library(ggplot2)
-ggplot(ll_grid, aes(x = beta0, y = beta1, fill = loglik)) +
-  geom_tile() +
-  scale_fill_viridis_c() +
-  labs(title = "Log-vraisemblance sur la grille des paramètres")
-```
-
-```{r}
-start_vec <- c(-50, 28, -1/2, 0, 0, 0, -60, 34)
-H_11 <- rep(NA, N)
-H_12 <- rep(NA, N)
-H_21 <- rep(NA, N)
-H_22 <- rep(NA, N)
-H_31 <- rep(NA, N)
-H_32 <- rep(NA, N)
-H_41 <- rep(NA, N)
-H_42 <- rep(NA, N)
-z1 <- rep(NA, N)
-z2 <- rep(NA, N)
-z3 <- rep(NA, N)
-z4 <- rep(NA, N)
-for (j in 1:4) {
-  beta_1_init <- start_vec[2*(j-1) +1]
-  beta_2_init <- start_vec[2*(j-1) + 2]
-  beta_H1 <- rep(NA, N)
-  beta_H1[1] <- beta_1_init
-  beta_H2 <- rep(NA, N)
-  beta_H2[1] <- beta_2_init
-  EMV_output <- resu_EMV_Batch(beta_H1, beta_H2)
-  beta_H1 <- EMV_output[1:N]
-  beta_H2 <- EMV_output[(N+1):(2*N)]
-  z <- EMV_output[(2*N+1):(3*N)]
-  if (j == 1) {
-      H_11 <- beta_H1
-      H_12 <- beta_H2
-      z1 <- z
-  } else if (j == 2) {
-    H_21 <- beta_H1
-    H_22 <- beta_H2
-    z2 <- z
-  } else if (j == 3) {
-    H_31 <- beta_H1
-    H_32 <- beta_H2
-    z3 <- z
-  } else {
-    H_41 <- beta_H1
-    H_42 <- beta_H2
-    z4 <- z
-  }
-}
-
-```
 
 ```{r}
 library(plotly)
@@ -1333,20 +1159,20 @@ library(ggplot2)
 library(viridis)
 
 # Exemple : coefficients GLM
-glm_coef <- coef(glm(cbind(n1, n0) ~ x, family = binomial()))
+glm_coef <- coef(glm(cbind(n1, n0) ~ x, family = binomial(link="probit")))
 
 b0_seq <- seq(-500, 500, length.out =1000)
 b1_seq <- seq(-500, 500, length.out = 1000)
 ll_grid <- expand.grid(beta0 = b0_seq, beta1 = b1_seq)
 
-ll_grid$loglik <- apply(ll_grid, 1, function(row) log_lik(c(row[1], row[2])))
+ll_grid$log_lik_prob <- apply(ll_grid, 1, function(row) log_lik_prob(c(row[1], row[2])))
 
-ggplot(ll_grid, aes(x = beta0, y = beta1, fill = loglik)) +
+ggplot(ll_grid, aes(x = beta0, y = beta1, fill = log_lik_prob)) +
   geom_tile() +
   scale_fill_viridis_c() +
   labs(title = "Log-vraisemblance sur la grille des paramètres")
 
-ggplot(ll_grid, aes(x = beta0, y = beta1, fill = loglik)) +
+ggplot(ll_grid, aes(x = beta0, y = beta1, fill = log_lik_prob)) +
   geom_tile() +
   scale_fill_viridis_c() +
   geom_point(aes(x = glm_coef[1], y = glm_coef[2]), color = "red", size = 3, shape = 17) +
@@ -1356,18 +1182,13 @@ ggplot(ll_grid, aes(x = beta0, y = beta1, fill = loglik)) +
 
 ```
 
-```{r}
-plot(x, n1 / (n1+n0), pch=19, xlab="x", ylab="Proportion de succès")
-
-```
-
 
 ```{r}
 library(ggplot2)
 
 # Points donnés
-p1 <- c(beta0 = -50, beta1 = 28)
-p2 <- c(beta0 = -60, beta1 = 34)
+p1 <- c(beta0 = -34, beta1 = 20)
+p2 <- c(beta0 = -40, beta1 = 20)
 
 # Nombre de points le long de la droite
 n_pts <- 200
@@ -1380,10 +1201,10 @@ beta1_seq <- seq(p1["beta1"], p2["beta1"], length.out = n_pts)
 loglik_seq <- sapply(1:n_pts, function(i) log_lik(c(beta0_seq[i], beta1_seq[i])))
 
 # Mettre dans un data frame
-df_line <- data.frame(beta0 = beta0_seq, beta1 = beta1_seq, loglik = loglik_seq)
+df_line <- data.frame(beta0 = beta0_seq, beta1 = beta1_seq, log_lik_prob = loglik_seq)
 
 # Tracer
-ggplot(df_line, aes(x = beta0, y = beta1, fill = loglik)) +
+ggplot(df_line, aes(x = beta0, y = beta1, fill = log_lik_prob)) +
   geom_tile() +
   scale_fill_viridis_c() +
   geom_point(aes(x = p1["beta0"], y = p1["beta1"]), color = "green", size = 3) +  # point 1
@@ -1397,7 +1218,8 @@ ggplot(df_line, aes(x = beta0, y = beta1, fill = loglik)) +
 #### MLE Estimators
 
 ```{r}
-c(-56.5,32)
+resu <- glm(cbind(n1, n0) ~ x, family=binomial(link="probit"))
+resu$coefficient
 ```
 
 ### Predictions
