@@ -340,6 +340,27 @@ df %>% ggplot(aes(x=x, y=p)) +
 ```
 
 
+```{r}
+mean_val <- mean(x)
+sd_val <- sd(x)
+lower_limit <- mean_val - 2*sd_val
+upper_limit <- mean_val + 2*sd_val
+df <- data.frame(
+  index = 1:length(x),
+  value = x
+)
+
+ggplot(df, aes(x=index, y=value)) +
+  geom_point(size=3) +
+  geom_hline(yintercept=mean(df$value), color="blue", size=1.2) +
+  geom_hline(yintercept=upper_limit, color="red", linetype="dashed") +
+  geom_hline(yintercept=lower_limit, color="red", linetype="dashed") +
+  theme_minimal() +
+  labs(title="No under/over-representation justifying weighting the log-likelihood function before optimization",
+       x="Sample Index",
+       y="Deviation to the mean")
+```
+
 #### Comments
 
 The relation is increasing at different rate depending on x. It is a non linear relation.
@@ -808,7 +829,35 @@ ggplot(data.frame(x=x, y=lv_hat), aes(x=x, y=y)) + geom_line()
 
 ```{r}
 p_hat <- (n1+n0)*prob(c(-56.5,32))
+p_hat
+```
 
+#### Computing quantities Yj for each Xj
+
+```{r}
+Y <- (n1+n0)*prob(c(-56.5,32))
+
+df_plot <- data.frame(
+  x = x,
+  value = c(Y, n1, (n1+n0)*prob(c(-60,34))),
+  type  = rep(c("Predicted", "Observed", "GLM_R"), each = length(x))
+)
+
+ggplot(df_plot, aes(x = x, y = value, color = type)) +
+  geom_line() +
+  geom_point() +
+  scale_color_manual(values = c("Predicted" = "red", "Observed" = "green", "GLM_R" = "blue")) +
+  labs(title = "Comparison between observations, predictions and glm_R predictions",
+       x = "x", y = "Y")
+```
+
+### Result Visualisation
+
+
+#### Plotting observed proportions vs predicted proportions depending on dose X 
+
+
+```{r}
 df_plot <- data.frame(
   x = x,
   value = c(prob(c(-56.5,32)), n1/(n1+n0), prob(c(-60,34))),
@@ -819,35 +868,15 @@ ggplot(df_plot, aes(x = x, y = value, color = type)) +
   geom_line() +
   geom_point() +
   scale_color_manual(values = c("Predicted" = "red", "Observed" = "green", "GLM_R" = "blue")) +
-  labs(title = "Comparaison prédictions vs observations vs predictions GLM_R",
+  labs(title = "Comparison between observations, predictions and glm_R predictions",
        x = "x", y = "Proportion")
-
-```
-
-#### Computing quantities Yj for each Xj
-
-```{r}
-
-```
-
-### Result Visualisation
-
-
-#### Plotting observed proportions vs predicted proportions depending on dose X 
-
-
-```{r}
 
 ```
 
 
 #### Commenting on adjustment quality
 
-
-```{r}
-
-```
-
+High adjustment quality for tails; low adjustment quality in between.
 
 ### Diagnostics 
 
