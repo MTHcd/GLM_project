@@ -883,19 +883,24 @@ High adjustment quality for tails; low adjustment quality in between.
 
 #### Computing Deviance
 
+$$D = 2[L(\beta_{max};y) - L(\beta;y)]$$
 
 ```{r}
-
+resu <- glm(cbind(n1, n0) ~ x, family = binomial(link="logit"))
+resu$null.deviance - resu$deviance
+# la covariable améliore le modèle
+resu$deviance
+# deviance faible: le modèle s'ajuste bien aux données
 ```
-
 
 #### Computing Pearson Statistics
 
+$$S_w = \sum_{j=1}^k\frac{(y_j - E(y_j))^2}{Var(y_j)}$$
 
 ```{r}
-
+sum(residuals(resu, type="pearson")^2)
+# bonne adéquation globale
 ```
-
 
 ## Probit Model
 
