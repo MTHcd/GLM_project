@@ -1242,10 +1242,12 @@ The relation is increasing at different rate depending on x. It is a non linear 
 
 #### Newton-Raphson Algorithm Implementation up to Convergence
 ```{r}
-log_lik_prob <- function(beta) {
+cloglog_prob <- function(beta) {
+  return(1-exp(-exp(beta[1]+x*beta[2])))
+}
+log_lik_cloglog <- function(beta) {
   eps <- 1e-10
-  xbeta <- beta[1]+beta[2]*x
-  return(sum(n1*log(pnorm(xbeta)+eps)+n0*log(1-pnorm(xbeta)+eps)))
+  return(sum(n1*log(cloglog_prob(beta)+eps)+n0*log(1-cloglog_prob(beta)+eps)))
 }
 ```
 
@@ -1256,9 +1258,9 @@ b0_seq <- seq(-500, 500, length.out =1000)
 b1_seq <- seq(-500, 500, length.out =1000)
 ll_grid <- expand.grid(beta0 = b0_seq, beta1 = b1_seq)
 
-ll_grid$log_lik_prob <- apply(ll_grid, 1, function(row) log_lik_prob(c(row[1], row[2])))
+ll_grid$log_lik_cloglog <- apply(ll_grid, 1, function(row) log_lik_cloglog(c(row[1], row[2])))
 
-ggplot(ll_grid, aes(x = beta0, y = beta1, fill = log_lik_prob)) +
+ggplot(ll_grid, aes(x = beta0, y = beta1, fill = log_lik_cloglog)) +
   geom_tile() +
   scale_fill_viridis_c() +
   labs(title = "Log-vraisemblance sur la grille des paramètres")
@@ -1267,13 +1269,12 @@ b0_seq <- seq(-40, 40, length.out =80)
 b1_seq <- seq(-40, 40, length.out =80)
 ll_grid <- expand.grid(beta0 = b0_seq, beta1 = b1_seq)
 
-ll_grid$log_lik_prob <- apply(ll_grid, 1, function(row) log_lik_prob(c(row[1], row[2])))
+ll_grid$log_lik_cloglog <- apply(ll_grid, 1, function(row) log_lik_cloglog(c(row[1], row[2])))
 
-ggplot(ll_grid, aes(x = beta0, y = beta1, fill = log_lik_prob)) +
+ggplot(ll_grid, aes(x = beta0, y = beta1, fill = log_lik_cloglog)) +
   geom_tile() +
   scale_fill_viridis_c() +
   labs(title = "Log-vraisemblance sur la grille des paramètres")
-
 
 ```
 
@@ -1291,55 +1292,59 @@ n0 <- c(59,60,62,56,63,59,62,60) - n1
 
 ##general
 
-prob <- function(beta) {
-  z <- beta[1] + beta[2]*x
-  return(pnorm(z))
+cloglog_prob <- function(beta) {
+  return(1-exp(-exp(beta[1]+x*beta[2])))
 }
-
-log_lik_prob <- function(beta) {
+log_lik_cloglog <- function(beta) {
   eps <- 1e-10
-  xbeta <- beta[1]+beta[2]*x
-  return(sum(n1*log(pnorm(xbeta)+eps)+n0*log(1-pnorm(xbeta)+eps)))
+  return(sum(n1*log(cloglog_prob(beta)+eps)+n0*log(1-cloglog_prob(beta)+eps)))
 }
 
 ## Score
 
-U_probit <- function(beta) {
+U_cloglog <- function(beta) {
   U <- matrix(nrow=2, ncol=1)
   p <- prob(beta)
-  U[1] <- sum((n1-n0)*exp(-1/2)/(sqrt(2*pi)*p))
-  U[2] <- sum((n1-n0)*exp(-x^2/2)/(sqrt(2*pi)*p))
+  eps <- 1e-10
+  xbeta <- beta[1] + x*beta[2]
+  U[1] <- sum((n1-n0)*(exp(-exp(xbeta)+xbeta))/(1-cloglog_prob(beta)+eps))
+  U[2] <- sum((n1-n0)*x*(exp(-exp(xbeta)+xbeta))/(1-cloglog_prob(beta)+eps))
   return(U)
 }
 
 ##Fisher Information
 
-I_probit <- function(beta) {
+mu_j <- function(beta) {
+  xbeta <- beta[1] + beta[2]*x
+  return(exp(xbeta))
+}
+
+I_cloglog <- function(beta) {
   com <- matrix(ncol=2, nrow=2)
-  p <- prob(beta)
-  com[1,1] <- sum((n1-n0)*exp(-x^2)/(2*pi*p^2))
-  com[1,2] <- -sum((n1-n0)*exp(-(1/2)*(1+x^2))/(2*pi*p^2))
+  p <- cloglog_prob(beta)
+  com[1,1] <- sum(((x^2)*(n1-n0)*exp(-mu_j(beta))*mu_j(beta)(exp(-mu_j(beta)+mu_j(beta)-1)))/(1-p)^2)
+  com[1,2] <- -sum((x*(n1-n0)*exp(-mu_j(beta))*mu_j(beta)(exp(-mu_j(beta)+mu_j(beta)-1)))/(1-p)^2)
   com[2,1] <- com[1,2]
-  com[2,2] <- sum((n1-n0)*exp(-1)/(2*pi*p^2))
+  com[2,2] <- sum(((n1-n0)*exp(-mu_j(beta))*mu_j(beta)(exp(-mu_j(beta)+mu_j(beta)-1)))/(1-p)^2)
   det <- (com[1,1]*com[2,2] - com[1,2]^2)
   return(com/(det+eps))
 }
 
 ## EMV Algo
 
-EMV_algo_probit <- function(beta, n) {
+EMV_algo_cloglog <- function(beta, n) {
   # if huge step but improvement, let it continue
   # if huge step but wrong movement, apply step size
   # if step size implies wrong movement, stop
-  new_beta <- beta + (I_probit(beta))%*%(U_probit(beta))
-  if (log_lik_prob(beta) < log_lik_prob(new_beta)) {
+  new_beta <- beta + (I_cloglog(beta))%*%(U_cloglog(beta))
+  if (log_lik_cloglog(beta) < log_lik_cloglog(new_beta)) {
     return(new_beta)
   }
-  else if (log_lik_prob(beta) >= log_lik_prob(new_beta)){
+  else if (log_lik_cloglog(beta) >= log_lik_cloglog(new_beta)){
       step <- 1
       repeat {
-        new_beta <- beta + step * I_probit(beta) %*% U_probit(beta)
-        if (log_lik_prob(new_beta) > log_lik_prob(beta) || step < 1e-6)
+        new_beta <- beta + step * I_cloglog(beta) %*% U_cloglog(beta)
+        if (log_lik_cloglog(new_beta) > log_lik_cloglog(beta) || step < 1e-6)
           break
         step <- step / 2
       }
@@ -1348,15 +1353,15 @@ EMV_algo_probit <- function(beta, n) {
   }
 ##EMV call
 
-resu_EMV_Batch_probit <- function(beta_H1, beta_H2) {
+resu_EMV_Batch_cloglog <- function(beta_H1, beta_H2) {
   z <- rep(NA, N)
-  z[1] <- log_lik_prob(c(beta_H1[1], beta_H2[1]))
+  z[1] <- log_lik_cloglog(c(beta_H1[1], beta_H2[1]))
   for (j in 2:N) {
-    resu <- EMV_algo_probit(c(beta_H1[j-1],beta_H2[j-1]),j)
+    resu <- EMV_algo_cloglog(c(beta_H1[j-1],beta_H2[j-1]),j)
     beta_H1[j] <- resu[1]
     beta_H2[j] <- resu[2]
     param <- c(resu[1], resu[2])
-    z[j] <- log_lik_prob(param)
+    z[j] <- log_lik_cloglog(param)
   }
   return(c(beta_H1, beta_H2, z))
 }
@@ -1378,7 +1383,7 @@ beta_H1[1] <- beta_1_init
 beta_H2 <- rep(NA, N)
 beta_H2[1] <- beta_2_init
 
-EMV_output <- resu_EMV_Batch_probit(beta_H1, beta_H2)
+EMV_output <- resu_EMV_Batch_cloglog(beta_H1, beta_H2)
 beta_H1 <- EMV_output[1:N]
 beta_H2 <- EMV_output[(N+1):(2*N)]
 
