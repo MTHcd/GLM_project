@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 x <- c(1.6907, 1.7242, 1.7552, 1.7842, 1.8113, 1.8369, 1.8610, 1.8839)
-n1 <- c(6 ,13,18,28,52,53,61,60)
+n1 <- c(6,13,18,28,52,53,61,60)
 n0 <- c(59,60,62,56,63,59,62,60) - n1
 ```
 
@@ -78,21 +78,40 @@ $$ \beta_{n+1} = \beta_n + (I(\beta_n))^{-1}U(\beta_n), n \ge 1$$
 
 #### Initial values
 
+```{r}
+
+
+```
 
 ### Adjustments Tests
 
 
 #### Deviance D
 
+$$D = 2[L(\beta_{max};y) - L(\beta;y)] $$
 
 #### Pearson Statistics
 
+General Formula:
+
+$$S_w = \sum_{j=1}^k\frac{(y_j - E(y_j))^2}{Var(y_j)}$$
+
+$$ X^2 = \sum_{j=1}^k \frac{(y_j - n_j^1\hat{\pi}_j)^2}{n_j^1\hat{\pi}_j(1-\hat{\pi}_j)} \sim \chi^2_{(k-2)}$$
+
+We obtain:
+
+$$X^2 = \sum_{j=1}^k \frac{(y_j - (n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}))^2}{(n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})(\frac{1}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})} $$
 
 #### Deviance Residuals
 
+$$d_j = sign(y_j - (n_j^1+n_j^0)\hat{\pi}_j)\sqrt{2[y_jlog(\frac{y_j}{(n_j^1+n_j^0)\hat{\pi}_j})+((n_j^1+n_j^0)-y_j)log(\frac{(n_j^1+n_j^0)-y_j}{(n_j^1+n_j^0)(1 - \hat{\pi}_j)})]}$$
 
 #### Pearson Residuals
 
+
+$$r_j = \frac{y_j - \hat{\pi}_j}{\sqrt{\hat{Var(y_j)}}}$$
+
+$$ r_j = \frac{y_j - (n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})}{\sqrt{(n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})(\frac{1}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})}} $$
 
 ## Probit Model
 
@@ -144,6 +163,10 @@ $$ \beta_{n+1} = \beta_n + (I(\beta_n))^{-1}U(\beta_n), n \ge 1$$
 
 #### Initial values
 
+```{r}
+
+
+```
 
 
 ### Adjustments Tests
@@ -151,14 +174,30 @@ $$ \beta_{n+1} = \beta_n + (I(\beta_n))^{-1}U(\beta_n), n \ge 1$$
 
 #### Deviance D
 
+$$D = 2[L(\beta_{max};y) - L(\beta;y)] $$
 
 #### Pearson Statistics
 
+General Formula:
+
+$$S_w = \sum_{j=1}^k\frac{(y_j - E(y_j))^2}{Var(y_j)}$$
+
+$$ X^2 = \sum_{j=1}^k \frac{(y_j - n_j^1\hat{\pi}_j)^2}{n_j^1\hat{\pi}_j(1-\hat{\pi}_j)} \sim \chi^2_{(k-2)}$$
+
+We obtain:
+
+$$X^2 = \sum_{j=1}^k \frac{(y_j - (n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}))^2}{(n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})(\frac{1}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})} $$
 
 #### Deviance Residuals
 
+$$d_j = sign(y_j - (n_j^1+n_j^0)\hat{\pi}_j)\sqrt{2[y_jlog(\frac{y_j}{(n_j^1+n_j^0)\hat{\pi}_j})+((n_j^1+n_j^0)-y_j)log(\frac{(n_j^1+n_j^0)-y_j}{(n_j^1+n_j^0)(1 - \hat{\pi}_j)})]}$$
 
 #### Pearson Residuals
+
+
+$$r_j = \frac{y_j - \hat{\pi}_j}{\sqrt{\hat{Var(y_j)}}}$$
+
+$$ r_j = \frac{y_j - (n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})}{\sqrt{(n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})(\frac{1}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})}} $$
 
 
 ## Cloglog Model
@@ -214,19 +253,36 @@ $$ \beta_{n+1} = \beta_n + (I(\beta_n))^{-1}U(\beta_n), n \ge 1$$
 #### Initial values
 
 
+
 ### Adjustments Tests
 
 
 #### Deviance D
 
+$$D = 2[L(\beta_{max};y) - L(\beta;y)] $$
 
 #### Pearson Statistics
 
+General Formula:
+
+$$S_w = \sum_{j=1}^k\frac{(y_j - E(y_j))^2}{Var(y_j)}$$
+
+$$ X^2 = \sum_{j=1}^k \frac{(y_j - n_j^1\hat{\pi}_j)^2}{n_j^1\hat{\pi}_j(1-\hat{\pi}_j)} \sim \chi^2_{(k-2)}$$
+
+We obtain:
+
+$$X^2 = \sum_{j=1}^k \frac{(y_j - (n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}))^2}{(n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})(\frac{1}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})} $$
 
 #### Deviance Residuals
 
+$$d_j = sign(y_j - (n_j^1+n_j^0)\hat{\pi}_j)\sqrt{2[y_jlog(\frac{y_j}{(n_j^1+n_j^0)\hat{\pi}_j})+((n_j^1+n_j^0)-y_j)log(\frac{(n_j^1+n_j^0)-y_j}{(n_j^1+n_j^0)(1 - \hat{\pi}_j)})]}$$
 
 #### Pearson Residuals
+
+
+$$r_j = \frac{y_j - \hat{\pi}_j}{\sqrt{\hat{Var(y_j)}}}$$
+
+$$ r_j = \frac{y_j - (n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})}{\sqrt{(n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})(\frac{1}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})}} $$
 
 
 
