@@ -144,25 +144,25 @@ $$L(X,\beta_1, \beta_2) = \sum_{j=1}^k (n^1_jlog(\int_0^{\beta_0 + \beta_1x_j}\f
 #### Score Vector U
 
 
-$$U(\beta) = (\sum_{j=1}^n \frac{e^{-\frac{1}{2}}(n^1_j -n^0_j)}{\sqrt{2\pi}\Phi(\beta_1+\beta_2x_j)}, \sum_{j=1}^n\frac{e^{-\frac{-x_j^2}{2}}(n^1_j -n^0_j)}{\sqrt{2\pi}\Phi(\beta_1 + \beta_2 x_j)})$$
+$$U(\beta) = (\sum_{j=1}^k \frac{e^{-\frac{1}{2}}(n^1_j -n^0_j)}{\sqrt{2\pi}\Phi(\beta_1+\beta_2x_j)}, \sum_{j=1}^k\frac{e^{-\frac{-x_j^2}{2}}(n^1_j -n^0_j)}{\sqrt{2\pi}\Phi(\beta_1 + \beta_2 x_j)})$$
+
 
 #### Fisher Information
 
 
-$$I(\beta) =  \begin{bmatrix} \sum_{j=1}^n\frac{e^{-1}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2} & \sum_{j=1}^n\frac{e^{-\frac{1}{2}(x_j^2+1)}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2}\\
-\sum_{j=1}^n\frac{e^{-\frac{1}{2}(x_j^2+1)}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2} & \sum_{j=1}^n\frac{e^{-x_j^2}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2}
+$$I(\beta) =  \begin{bmatrix} \sum_{j=1}^k\frac{e^{-1}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2} & \sum_{j=1}^k\frac{e^{-\frac{1}{2}(x_j^2+1)}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2}\\
+\sum_{j=1}^k\frac{e^{-\frac{1}{2}(x_j^2+1)}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2} & \sum_{j=1}^k\frac{e^{-x_j^2}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2}
 \end{bmatrix}$$
 
-$$I(\beta)^{-1} =  \frac{\begin{bmatrix} \sum_{j=1}^n\frac{e^{-1}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2} & -\sum_{j=1}^n\frac{e^{-\frac{1}{2}(x_j^2+1)}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2}\\
--\sum_{j=1}^n\frac{e^{-\frac{1}{2}(x_j^2+1)}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2} & \sum_{j=1}^n\frac{e^{-x_j^2}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2}
-\end{bmatrix}}{(\sum_{j=1}^n\frac{e^{-1}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2})( \sum_{j=1}^n\frac{e^{-x_j^2}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2}) - (\sum_{j=1}^n\frac{e^{-\frac{1}{2}(x_j^2+1)}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2})^2}$$
 
+$$I(\beta)^{-1} =  \frac{\begin{bmatrix} \sum_{j=1}^k\frac{e^{-x_j^2}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2} & -\sum_{j=1}^k\frac{e^{-\frac{1}{2}(x_j^2+1)}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2}\\
+-\sum_{j=1}^k\frac{e^{-\frac{1}{2}(x_j^2+1)}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2} & 
+\sum_{j=1}^k\frac{e^{-1}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2}
+\end{bmatrix}}{(\sum_{j=1}^k\frac{e^{-1}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2})( \sum_{j=1}^k\frac{e^{-x_j^2}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2}) - (\sum_{j=1}^k\frac{e^{-\frac{1}{2}(x_j^2+1)}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2})^2}$$
 
 ### Newton-Raphson Algorithm
 
-
 #### Recurrence relation for Beta estimation
-
 
 $$ \beta_{n+1} = \beta_n + (I(\beta_n))^{-1}U(\beta_n), n \ge 1$$
 
@@ -246,8 +246,8 @@ $$I(\beta) =  \begin{bmatrix} \sum_{j=1}^k\frac{(e^{-e^{(\beta_1 + \beta_2 x_j)}
 \end{bmatrix}$$
 
 
-$$I(\beta) =  \begin{bmatrix} \sum_{i=1}^n\frac{(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)}{(1 - e^{-\mu_j(\beta)})^2}(n^1_j - n^0_j) & \sum_{i=1}^n\frac{x_j(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)}{(1 - e^{-\mu_j(\beta)})^2}(n^1_j - n^0_j)\\
-\sum_{i=1}^n\frac{x_j(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)}{(1 - e^{-\mu_j(\beta)})^2}(n^1_j - n^0_j) & \sum_{i=1}^n\frac{x_j^2(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)}{(1 - e^{-\mu_j(\beta)})^2}(n^1_j - n^0_j)
+$$I(\beta) =  \begin{bmatrix} \sum_{j=1}^k\frac{(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)}{(1 - e^{-\mu_j(\beta)})^2}(n^1_j - n^0_j) & \sum_{j=1}^k\frac{x_j(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)}{(1 - e^{-\mu_j(\beta)})^2}(n^1_j - n^0_j)\\
+\sum_{j=1}^k\frac{x_j(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)}{(1 - e^{-\mu_j(\beta)})^2}(n^1_j - n^0_j) & \sum_{j=1}^k\frac{x_j^2(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)}{(1 - e^{-\mu_j(\beta)})^2}(n^1_j - n^0_j)
 \end{bmatrix}$$
 
 $$I(\beta)^{-1} =  \frac{\begin{bmatrix} \sum_{j=1}^k\frac{x_j^2(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)}{(1 - e^{-\mu_j(\beta)})^2}(n^1_j - n^0_j) & -\sum_{j=1}^k\frac{x_j(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)}{(1 - e^{-\mu_j(\beta)})^2}(n^1_j - n^0_j)\\
@@ -1004,7 +1004,7 @@ x <- c(1.6907, 1.7242, 1.7552, 1.7842, 1.8113, 1.8369, 1.8610, 1.8839)
 n1 <- c(6 ,13,18,28,52,53,61,60)
 n0 <- c(59,60,62,56,63,59,62,60) - n1
 
-## general
+##general
 
 prob <- function(beta) {
   z <- beta[1] + beta[2]*x
@@ -1050,15 +1050,17 @@ EMV_algo_probit <- function(beta, n) {
   if (log_lik_prob(beta) < log_lik_prob(new_beta)) {
     return(new_beta)
   }
-  else if (log_lik_prob(beta) > log_lik_prob(new_beta)){
-    new_beta <- beta + (1/1000)*(I_probit(beta))%*%(U_probit(beta))
-    if (log_lik_prob(beta) < log_lik_prob(new_beta)) {
+  else if (log_lik_prob(beta) >= log_lik_prob(new_beta)){
+      step <- 1
+      repeat {
+        new_beta <- beta + step * I_probit(beta) %*% U_probit(beta)
+        if (log_lik_prob(new_beta) > log_lik_prob(beta) || step < 1e-6)
+          break
+        step <- step / 2
+      }
       return(new_beta)
-    } else {
-      return(beta)
     }
   }
-}
 ##EMV call
 
 resu_EMV_Batch_probit <- function(beta_H1, beta_H2) {
@@ -1069,9 +1071,6 @@ resu_EMV_Batch_probit <- function(beta_H1, beta_H2) {
     beta_H1[j] <- resu[1]
     beta_H2[j] <- resu[2]
     param <- c(resu[1], resu[2])
-    if (beta_H1[j-1] == beta_H1[j] & beta_H2[j-1] == beta_H2[j]) {
-      return(c(beta_H1, beta_H2, z, j))
-    }
     z[j] <- log_lik_prob(param)
   }
   return(c(beta_H1, beta_H2, z))
@@ -1083,9 +1082,9 @@ resu_EMV_Batch_probit <- function(beta_H1, beta_H2) {
 ##params
 eps <- 1e-8
 nu <- 1e-6
-N <- 50000
+N <- 100000
 ## initial values
-beta_1_init <- -34
+beta_1_init <- -30
 beta_2_init <- 20
 
 ## batch
@@ -1099,128 +1098,6 @@ beta_H1 <- EMV_output[1:N]
 beta_H2 <- EMV_output[(N+1):(2*N)]
 
 c(beta_H1[N], beta_H2[N])
-```
-
-
-```{r}
-library(plotly)
-library(dplyr)
-
-# Combine all trajectories into one data frame
-traj_df <- bind_rows(
-  data.frame(beta0 = H_11, beta1 = H_12, loglik = z1, traj = "Start 1", iter = 1:N),
-  data.frame(beta0 = H_21, beta1 = H_22, loglik = z2, traj = "Start 2", iter = 1:N),
-  data.frame(beta0 = H_31, beta1 = H_32, loglik = z3, traj = "Start 3", iter = 1:N),
-  data.frame(beta0 = H_41, beta1 = H_42, loglik = z4, traj = "Start 4", iter = 1:N)
-)
-
-# Function to get starting, ending, and max-likelihood points
-get_special_points <- function(df) {
-  df <- df %>% filter(!is.na(beta0))
-  start <- df %>% slice(1) %>% mutate(type = "Start")
-  end   <- df %>% slice_tail(n=1) %>% mutate(type = "End")
-  max_ll <- df %>% slice_max(loglik, n=1) %>% mutate(type = "Max LL")
-  bind_rows(start, end, max_ll)
-}
-
-special_pts <- traj_df %>%
-  group_by(traj) %>%
-  group_modify(~get_special_points(.x)) %>%
-  ungroup()
-
-# Plot
-fig <- plot_ly() %>%
-  # Trajectories
-  add_trace(data = traj_df, x = ~beta0, y = ~beta1, z = ~loglik, color = ~traj,
-            type = 'scatter3d', mode = 'lines', name = ~traj) %>%
-  # Starting points
-  add_markers(data = special_pts %>% filter(type=="Start"),
-              x = ~beta0, y = ~beta1, z = ~loglik,
-              marker = list(size = 4, color = 'green'), name = 'Start') %>%
-  # Ending points
-  add_markers(data = special_pts %>% filter(type=="End"),
-              x = ~beta0, y = ~beta1, z = ~loglik,
-              marker = list(size = 4, color = 'red'), name = 'End') %>%
-  # Max log-likelihood points
-  add_markers(data = special_pts %>% filter(type=="Max LL"),
-              x = ~beta0, y = ~beta1, z = ~loglik,
-              marker = list(size = 4, color = 'blue'), name = 'Max LL') %>%
-  layout(scene = list(
-    xaxis = list(title = "Beta 0"),
-    yaxis = list(title = "Beta 1"),
-    zaxis = list(title = "Log-Likelihood")
-  ),
-  title = "Trajectories of Beta Parameters with Starting, Ending, and Max Log-Likelihood Points"
-  )
-# Starting points with coordinates as labels
-
-fig
-
-
-
-```
-
-
-```{r}
-library(ggplot2)
-#install.packages("viridis")
-library(viridis)
-
-# Exemple : coefficients GLM
-glm_coef <- coef(glm(cbind(n1, n0) ~ x, family = binomial(link="probit")))
-
-b0_seq <- seq(-500, 500, length.out =1000)
-b1_seq <- seq(-500, 500, length.out = 1000)
-ll_grid <- expand.grid(beta0 = b0_seq, beta1 = b1_seq)
-
-ll_grid$log_lik_prob <- apply(ll_grid, 1, function(row) log_lik_prob(c(row[1], row[2])))
-
-ggplot(ll_grid, aes(x = beta0, y = beta1, fill = log_lik_prob)) +
-  geom_tile() +
-  scale_fill_viridis_c() +
-  labs(title = "Log-vraisemblance sur la grille des paramètres")
-
-ggplot(ll_grid, aes(x = beta0, y = beta1, fill = log_lik_prob)) +
-  geom_tile() +
-  scale_fill_viridis_c() +
-  geom_point(aes(x = glm_coef[1], y = glm_coef[2]), color = "red", size = 3, shape = 17) +
-  labs(title = "Log-vraisemblance sur la grille des paramètres",
-       subtitle = "Le point rouge correspond à la solution GLM") +
-  theme_minimal()
-
-```
-
-
-```{r}
-library(ggplot2)
-
-# Points donnés
-p1 <- c(beta0 = -34, beta1 = 20)
-p2 <- c(beta0 = -40, beta1 = 20)
-
-# Nombre de points le long de la droite
-n_pts <- 200
-
-# Générer la droite par interpolation linéaire
-beta0_seq <- seq(p1["beta0"], p2["beta0"], length.out = n_pts)
-beta1_seq <- seq(p1["beta1"], p2["beta1"], length.out = n_pts)
-
-# Calculer la log-vraisemblance le long de la droite
-loglik_seq <- sapply(1:n_pts, function(i) log_lik(c(beta0_seq[i], beta1_seq[i])))
-
-# Mettre dans un data frame
-df_line <- data.frame(beta0 = beta0_seq, beta1 = beta1_seq, log_lik_prob = loglik_seq)
-
-# Tracer
-ggplot(df_line, aes(x = beta0, y = beta1, fill = log_lik_prob)) +
-  geom_tile() +
-  scale_fill_viridis_c() +
-  geom_point(aes(x = p1["beta0"], y = p1["beta1"]), color = "green", size = 3) +  # point 1
-  geom_point(aes(x = p2["beta0"], y = p2["beta1"]), color = "red", size = 3) +    # point 2
-  labs(title = "Évolution de la log-vraisemblance le long de la droite",
-       x = expression(beta[0]), y = expression(beta[1]), fill = "Log-likelihood") +
-  theme_minimal()
-
 ```
 
 #### MLE Estimators
@@ -1239,7 +1116,7 @@ $$\hat{v_{ij}} = \hat{\beta}_0 + \hat{\beta}_1x_j$$
 #### Computing linear predicted values
 
 ```{r}
-lv_hat <- -56.5 + 32*x
+lv_hat <- resu$coefficient[1] + resu$coefficient[2]*x
 lv_hat
 ggplot(data.frame(x=x, y=lv_hat), aes(x=x, y=y)) + geom_line()
 ```
@@ -1247,27 +1124,15 @@ ggplot(data.frame(x=x, y=lv_hat), aes(x=x, y=y)) + geom_line()
 #### Computing predicted proportions
 
 ```{r}
-p_hat <- (n1+n0)*prob(c(-56.5,32))
+p_hat <- prob(resu$coefficient)
 p_hat
 ```
 
 #### Computing quantities Yj for each Xj
 
 ```{r}
-Y <- (n1+n0)*prob(c(-56.5,32))
-
-df_plot <- data.frame(
-  x = x,
-  value = c(Y, n1, (n1+n0)*prob(c(-60,34))),
-  type  = rep(c("Predicted", "Observed", "GLM_R"), each = length(x))
-)
-
-ggplot(df_plot, aes(x = x, y = value, color = type)) +
-  geom_line() +
-  geom_point() +
-  scale_color_manual(values = c("Predicted" = "red", "Observed" = "green", "GLM_R" = "blue")) +
-  labs(title = "Comparison between observations, predictions and glm_R predictions",
-       x = "x", y = "Y")
+Y <- (n1+n0)*prob(resu$coefficient)
+Y
 ```
 
 ### Result Visualisation
@@ -1279,35 +1144,33 @@ ggplot(df_plot, aes(x = x, y = value, color = type)) +
 ```{r}
 df_plot <- data.frame(
   x = x,
-  value = c(prob(c(-56.5,32)), n1/(n1+n0), prob(c(-60,34))),
-  type  = rep(c("Predicted", "Observed", "GLM_R"), each = length(x))
+  value = prob(resu$coefficient), n1/(n1+n0),
+  type  = rep(c("Predicted", "Observed"), each = length(x))
 )
 
 ggplot(df_plot, aes(x = x, y = value, color = type)) +
   geom_line() +
   geom_point() +
-  scale_color_manual(values = c("Predicted" = "red", "Observed" = "green", "GLM_R" = "blue")) +
-  labs(title = "Comparison between observations, predictions and glm_R predictions",
+  scale_color_manual(values = c("Predicted" = "red", "Observed" = "green")) +
+  labs(title = "Comparison between observations, predictions",
        x = "x", y = "Proportion")
-
 ```
 
 
 #### Commenting on adjustment quality
 
-High adjustment quality for tails; low adjustment quality in between.
+High quality adjustment
 
 ### Diagnostics 
-
 
 #### Computing Deviance
 
 $$D = 2[L(\beta_{max};y) - L(\beta;y)]$$
 
 ```{r}
-resu <- glm(cbind(n1, n0) ~ x, family = binomial(link="logit"))
+resu <- glm(cbind(n1, n0) ~ x, family = binomial(link="probit"))
 resu$null.deviance - resu$deviance
-# la covariable améliore le modèle
+# diff élevée: la covariable améliore le modèle
 resu$deviance
 # deviance faible: le modèle s'ajuste bien aux données
 ```
@@ -1327,9 +1190,7 @@ sum(residuals(resu, type="pearson")^2)
 
 ### Data visualization
 
-
 #### Plot
-
 
 ```{r}
 library(ggplot2)
@@ -1380,6 +1241,42 @@ The relation is increasing at different rate depending on x. It is a non linear 
 
 
 #### Newton-Raphson Algorithm Implementation up to Convergence
+```{r}
+log_lik_prob <- function(beta) {
+  eps <- 1e-10
+  xbeta <- beta[1]+beta[2]*x
+  return(sum(n1*log(pnorm(xbeta)+eps)+n0*log(1-pnorm(xbeta)+eps)))
+}
+```
+
+
+```{r}
+library(ggplot2)
+b0_seq <- seq(-500, 500, length.out =1000)
+b1_seq <- seq(-500, 500, length.out =1000)
+ll_grid <- expand.grid(beta0 = b0_seq, beta1 = b1_seq)
+
+ll_grid$log_lik_prob <- apply(ll_grid, 1, function(row) log_lik_prob(c(row[1], row[2])))
+
+ggplot(ll_grid, aes(x = beta0, y = beta1, fill = log_lik_prob)) +
+  geom_tile() +
+  scale_fill_viridis_c() +
+  labs(title = "Log-vraisemblance sur la grille des paramètres")
+
+b0_seq <- seq(-40, 40, length.out =80)
+b1_seq <- seq(-40, 40, length.out =80)
+ll_grid <- expand.grid(beta0 = b0_seq, beta1 = b1_seq)
+
+ll_grid$log_lik_prob <- apply(ll_grid, 1, function(row) log_lik_prob(c(row[1], row[2])))
+
+ggplot(ll_grid, aes(x = beta0, y = beta1, fill = log_lik_prob)) +
+  geom_tile() +
+  scale_fill_viridis_c() +
+  labs(title = "Log-vraisemblance sur la grille des paramètres")
+
+
+```
+
 
 ```{r}
 library(ggplot2)
@@ -1389,177 +1286,91 @@ library(dplyr)
 ##data
 
 x <- c(1.6907, 1.7242, 1.7552, 1.7842, 1.8113, 1.8369, 1.8610, 1.8839)
-x_scaled <- (x-mean(x))/sd(x)
 n1 <- c(6 ,13,18,28,52,53,61,60)
 n0 <- c(59,60,62,56,63,59,62,60) - n1
 
-## general
-
-logistic <- function(z) {
-  return(ifelse(z >= 0, 
-                1 / (1 + exp(-z)), 
-                exp(z) / (1 + exp(z))))
-}
+##general
 
 prob <- function(beta) {
   z <- beta[1] + beta[2]*x
-  return(logistic(z))
+  return(pnorm(z))
 }
 
-
-log_lik <- function(beta) {
-  p <- prob(beta)
-  return(sum(n1*log(p+eps)+ n0*log(1-p+eps)))
+log_lik_prob <- function(beta) {
+  eps <- 1e-10
+  xbeta <- beta[1]+beta[2]*x
+  return(sum(n1*log(pnorm(xbeta)+eps)+n0*log(1-pnorm(xbeta)+eps)))
 }
 
 ## Score
 
-U <- function(beta) {
+U_probit <- function(beta) {
   U <- matrix(nrow=2, ncol=1)
   p <- prob(beta)
-  U[1] <- sum(n1*(1-p)-n0*p)
-  U[2] <- sum(x*(n1*(1-p)-n0*p))
+  U[1] <- sum((n1-n0)*exp(-1/2)/(sqrt(2*pi)*p))
+  U[2] <- sum((n1-n0)*exp(-x^2/2)/(sqrt(2*pi)*p))
   return(U)
-}
-
-
-stoch_U <- function(beta, index) {
-  G <- matrix(nrow=2, ncol=1)
-  p <- prob(beta)
-  w1 <- n1*(1-p)-n0*p
-  w2 <- x*(n1*(1-p)-n0*p)
-  G[1] <- sum(w1[index])
-  G[2] <- sum(w2[index])
-  return(G)
 }
 
 ##Fisher Information
 
-stoch_I <- function(beta, index) {
+I_probit <- function(beta) {
   com <- matrix(ncol=2, nrow=2)
   p <- prob(beta)
-  v1 <- x^2*(n1*(1-p)/(p+eps) - (n0*p)/(1-p+eps))
-  v2 <- -x*n1*(1-p)/(p+eps) - n0*p/(1-p+eps)
-  v3 <- v2
-  v4 <- n1*(1-p)/(p+eps) - n0*p/(1-p+eps)
-  com[1,1] <- sum(v1[index])
-  com[1,2] <- sum(v2[index])
+  com[1,1] <- sum((n1-n0)*exp(-x^2)/(2*pi*p^2))
+  com[1,2] <- -sum((n1-n0)*exp(-(1/2)*(1+x^2))/(2*pi*p^2))
   com[2,1] <- com[1,2]
-  com[2,2] <- sum(v3[index])
-  det <- com[1,1]*com[2,2] - com[1,2]^2
-  if (abs(det) < 1e-6) {
-    warning("Déterminant trop petit, inversion instable")
-    det <- diag(2)*1e6
-  }
-  return(com/(det+eps))
-}
-
-I <- function(beta) {
-  com <- matrix(ncol=2, nrow=2)
-  p <- prob(beta)
-  com[1,1] <- sum(x^2*(n1*(1-p)/(p+eps) - (n0*p)/(1-p+eps)))
-  com[1,2] <- -sum(x*(n1*(1-p)/(p+eps) - n0*p/(1-p+eps)))
-  com[2,1] <- com[1,2]
-  com[2,2] <- sum(n1*(1-p)/(p+eps) - n0*p/(1-p+eps))
+  com[2,2] <- sum((n1-n0)*exp(-1)/(2*pi*p^2))
   det <- (com[1,1]*com[2,2] - com[1,2]^2)
-  if (abs(det) < 1e-6) {
-    warning("Déterminant trop petit, inversion instable")
-    det <- diag(2)*1e6
-  }
   return(com/(det+eps))
 }
 
 ## EMV Algo
 
-EMV_algo <- function(beta, n) {
-  new_beta <- beta + (I(beta)%*%U(beta))
-  return(new_beta)
-}
-
-EMV_algo_lambda <- function(beta, n) {
-  ll_old <- log_lik(beta)
-  step <- 1
-  if (n > 20000) {
-    param <- sqrt(lambda/n)
-  } else {
-    param <- lambda/sqrt(n)
+EMV_algo_probit <- function(beta, n) {
+  # if huge step but improvement, let it continue
+  # if huge step but wrong movement, apply step size
+  # if step size implies wrong movement, stop
+  new_beta <- beta + (I_probit(beta))%*%(U_probit(beta))
+  if (log_lik_prob(beta) < log_lik_prob(new_beta)) {
+    return(new_beta)
   }
-  for (i in 1:10) {
-    beta_check <- beta + param*step*(I(beta)%*%U(beta))
-    ll_new <- log_lik(beta_check)
-    if (all(is.finite(beta_check)) && ll_new >= ll_old) {
-      break
+  else if (log_lik_prob(beta) >= log_lik_prob(new_beta)){
+      step <- 1
+      repeat {
+        new_beta <- beta + step * I_probit(beta) %*% U_probit(beta)
+        if (log_lik_prob(new_beta) > log_lik_prob(beta) || step < 1e-6)
+          break
+        step <- step / 2
+      }
+      return(new_beta)
     }
-    step <- step / 2
   }
-  beta_star <- beta_check
-  return(beta_star)
-}
-
-EMV_algo_stoch <- function(beta, n, index) {
-  ll_old <- log_lik(beta)
-  step <- 1
-  if (n > 20000) {
-    param <- sqrt(lambda/n)
-  } else {
-    param <- lambda/sqrt(n)
-  }
-  for (i in 1:10) {
-    beta_check <- beta + param*step*(stoch_I(beta, index)%*%stoch_U(beta, index))
-    ll_new <- log_lik(beta_check)
-    if (all(is.finite(beta_check)) && ll_new >= ll_old) {
-      break
-    }
-    step <- step / 2
-  }
-  beta_star <- beta_check
-  return(beta_star)
-}
-
 ##EMV call
 
-resu_EMV_Batch <- function(beta_H1, beta_H2) {
+resu_EMV_Batch_probit <- function(beta_H1, beta_H2) {
   z <- rep(NA, N)
-  z[1] <- log_lik(c(beta_H1[1], beta_H2[1]))
+  z[1] <- log_lik_prob(c(beta_H1[1], beta_H2[1]))
   for (j in 2:N) {
-  resu <- EMV_algo(c(beta_H1[j-1],beta_H2[j-1]),j)
-  beta_H1[j] <- resu[1]
-  beta_H2[j] <- resu[2]
-  param <- c(resu[1], resu[2])
-  z[j] <- log_lik(param)
-  
-  if (sqrt(sum((resu - c(beta_H1[j-1],beta_H2[j-1]))^2))< nu) {
-    message("Convergence atteinte à l'itération ", j)
-    break
-  }
+    resu <- EMV_algo_probit(c(beta_H1[j-1],beta_H2[j-1]),j)
+    beta_H1[j] <- resu[1]
+    beta_H2[j] <- resu[2]
+    param <- c(resu[1], resu[2])
+    z[j] <- log_lik_prob(param)
   }
   return(c(beta_H1, beta_H2, z))
 }
 
-resu_EMV_SG <- function(beta_H1S, beta_H2S) {
-  for (j in 2:N) {
-  index <- sample(length(x), floor(3*length(x)/4))
-  resuS <- EMV_algo_stoch(c(beta_H1S[j-1],beta_H2S[j-1]), j, index)
-  beta_H1S[j] <- resuS[1]
-  beta_H2S[j] <- resuS[2]
-  if (sqrt(sum((resuS - c(beta_H1S[j-1],beta_H2S[j-1]))^2))< nu) {
-    message("Convergence atteinte à l'itération ", j)
-    break
-    }
-  }
- return(c(beta_H1S, beta_H2S)) 
-}
 
 ####EMV calling
 
 ##params
 eps <- 1e-8
-lambda <- 1
 nu <- 1e-6
-N <- 10000
+N <- 100000
 ## initial values
-beta_1_init <- -56.5
-beta_2_init <- 32
+beta_1_init <- -30
+beta_2_init <- 20
 
 ## batch
 beta_H1 <- rep(NA, N)
@@ -1567,260 +1378,19 @@ beta_H1[1] <- beta_1_init
 beta_H2 <- rep(NA, N)
 beta_H2[1] <- beta_2_init
 
-EMV_output <- resu_EMV_Batch(beta_H1, beta_H2)
+EMV_output <- resu_EMV_Batch_probit(beta_H1, beta_H2)
 beta_H1 <- EMV_output[1:N]
 beta_H2 <- EMV_output[(N+1):(2*N)]
 
-## "mini batch"
-beta_H1S <- rep(NA, N)
-beta_H1S[1] <- beta_1_init
-beta_H2S <- rep(NA, N)
-beta_H2S[1] <- beta_2_init
-
-EMV_output_sg <- resu_EMV_SG(beta_H1S, beta_H2S)
-beta_H1S <- EMV_output_sg[1:N]
-beta_H2S <- EMV_output_sg[(N+1):(2*N)]
-
-###Plot
-
-df <- data.frame(
-  iter = 1:N,
-  beta_H1 = beta_H1,
-  beta_H2 = beta_H2,
-  beta_H1S = beta_H1S,
-  beta_H2S = beta_H2S
-)
-
-df_long <- df %>%
-  pivot_longer(cols = -iter, names_to = c("param", "method"), 
-               names_pattern = "(beta_H1|beta_H2)(S?)",
-               values_to = "value") %>%
-  mutate(
-    param = recode(param, beta_H1 = "Beta 1", beta_H2 = "Beta 2"),
-    method = ifelse(method == "S", "Stochastic", "Batch")
-  )
-
-ggplot(df_long, aes(x = iter, y = value, color = method)) +
-  geom_line() +
-  facet_wrap(~param, scales = "free_y") +
-  theme_minimal() +
-  labs(
-    title = "Convergence of Parameters Over Iterations",
-    x = "Iteration",
-    y = "Parameter Value",
-    color = "Algorithm"
-  )
-```
-
-```{r}
-
-b0_seq <- seq(-1000, 500, length.out =1500)
-b1_seq <- seq(-500, 1000, length.out = 1500)
-ll_grid <- expand.grid(beta0 = b0_seq, beta1 = b1_seq)
-
-ll_grid$loglik <- apply(ll_grid, 1, function(row) log_lik(c(row[1], row[2])))
-
-library(ggplot2)
-ggplot(ll_grid, aes(x = beta0, y = beta1, fill = loglik)) +
-  geom_tile() +
-  scale_fill_viridis_c() +
-  labs(title = "Log-vraisemblance sur la grille des paramètres")
-
-```
-
-
-```{r}
-b0_seq <- seq(-5, 5, length.out =10)
-b1_seq <- seq(-5, 5, length.out = 10)
-ll_grid <- expand.grid(beta0 = b0_seq, beta1 = b1_seq)
-
-ll_grid$loglik <- apply(ll_grid, 1, function(row) log_lik(c(row[1], row[2])))
-
-library(ggplot2)
-ggplot(ll_grid, aes(x = beta0, y = beta1, fill = loglik)) +
-  geom_tile() +
-  scale_fill_viridis_c() +
-  labs(title = "Log-vraisemblance sur la grille des paramètres")
-```
-
-```{r}
-start_vec <- c(-50, 28, -1/2, 0, 0, 0, -60, 34)
-H_11 <- rep(NA, N)
-H_12 <- rep(NA, N)
-H_21 <- rep(NA, N)
-H_22 <- rep(NA, N)
-H_31 <- rep(NA, N)
-H_32 <- rep(NA, N)
-H_41 <- rep(NA, N)
-H_42 <- rep(NA, N)
-z1 <- rep(NA, N)
-z2 <- rep(NA, N)
-z3 <- rep(NA, N)
-z4 <- rep(NA, N)
-for (j in 1:4) {
-  beta_1_init <- start_vec[2*(j-1) +1]
-  beta_2_init <- start_vec[2*(j-1) + 2]
-  beta_H1 <- rep(NA, N)
-  beta_H1[1] <- beta_1_init
-  beta_H2 <- rep(NA, N)
-  beta_H2[1] <- beta_2_init
-  EMV_output <- resu_EMV_Batch(beta_H1, beta_H2)
-  beta_H1 <- EMV_output[1:N]
-  beta_H2 <- EMV_output[(N+1):(2*N)]
-  z <- EMV_output[(2*N+1):(3*N)]
-  if (j == 1) {
-      H_11 <- beta_H1
-      H_12 <- beta_H2
-      z1 <- z
-  } else if (j == 2) {
-    H_21 <- beta_H1
-    H_22 <- beta_H2
-    z2 <- z
-  } else if (j == 3) {
-    H_31 <- beta_H1
-    H_32 <- beta_H2
-    z3 <- z
-  } else {
-    H_41 <- beta_H1
-    H_42 <- beta_H2
-    z4 <- z
-  }
-}
-
-```
-
-```{r}
-library(plotly)
-library(dplyr)
-
-# Combine all trajectories into one data frame
-traj_df <- bind_rows(
-  data.frame(beta0 = H_11, beta1 = H_12, loglik = z1, traj = "Start 1", iter = 1:N),
-  data.frame(beta0 = H_21, beta1 = H_22, loglik = z2, traj = "Start 2", iter = 1:N),
-  data.frame(beta0 = H_31, beta1 = H_32, loglik = z3, traj = "Start 3", iter = 1:N),
-  data.frame(beta0 = H_41, beta1 = H_42, loglik = z4, traj = "Start 4", iter = 1:N)
-)
-
-# Function to get starting, ending, and max-likelihood points
-get_special_points <- function(df) {
-  df <- df %>% filter(!is.na(beta0))
-  start <- df %>% slice(1) %>% mutate(type = "Start")
-  end   <- df %>% slice_tail(n=1) %>% mutate(type = "End")
-  max_ll <- df %>% slice_max(loglik, n=1) %>% mutate(type = "Max LL")
-  bind_rows(start, end, max_ll)
-}
-
-special_pts <- traj_df %>%
-  group_by(traj) %>%
-  group_modify(~get_special_points(.x)) %>%
-  ungroup()
-
-# Plot
-fig <- plot_ly() %>%
-  # Trajectories
-  add_trace(data = traj_df, x = ~beta0, y = ~beta1, z = ~loglik, color = ~traj,
-            type = 'scatter3d', mode = 'lines', name = ~traj) %>%
-  # Starting points
-  add_markers(data = special_pts %>% filter(type=="Start"),
-              x = ~beta0, y = ~beta1, z = ~loglik,
-              marker = list(size = 4, color = 'green'), name = 'Start') %>%
-  # Ending points
-  add_markers(data = special_pts %>% filter(type=="End"),
-              x = ~beta0, y = ~beta1, z = ~loglik,
-              marker = list(size = 4, color = 'red'), name = 'End') %>%
-  # Max log-likelihood points
-  add_markers(data = special_pts %>% filter(type=="Max LL"),
-              x = ~beta0, y = ~beta1, z = ~loglik,
-              marker = list(size = 4, color = 'blue'), name = 'Max LL') %>%
-  layout(scene = list(
-    xaxis = list(title = "Beta 0"),
-    yaxis = list(title = "Beta 1"),
-    zaxis = list(title = "Log-Likelihood")
-  ),
-  title = "Trajectories of Beta Parameters with Starting, Ending, and Max Log-Likelihood Points"
-  )
-# Starting points with coordinates as labels
-
-fig
-
-
-
-```
-
-
-```{r}
-library(ggplot2)
-#install.packages("viridis")
-library(viridis)
-
-# Exemple : coefficients GLM
-glm_coef <- coef(glm(cbind(n1, n0) ~ x, family = binomial()))
-
-b0_seq <- seq(-500, 500, length.out =1000)
-b1_seq <- seq(-500, 500, length.out = 1000)
-ll_grid <- expand.grid(beta0 = b0_seq, beta1 = b1_seq)
-
-ll_grid$loglik <- apply(ll_grid, 1, function(row) log_lik(c(row[1], row[2])))
-
-ggplot(ll_grid, aes(x = beta0, y = beta1, fill = loglik)) +
-  geom_tile() +
-  scale_fill_viridis_c() +
-  labs(title = "Log-vraisemblance sur la grille des paramètres")
-
-ggplot(ll_grid, aes(x = beta0, y = beta1, fill = loglik)) +
-  geom_tile() +
-  scale_fill_viridis_c() +
-  geom_point(aes(x = glm_coef[1], y = glm_coef[2]), color = "red", size = 3, shape = 17) +
-  labs(title = "Log-vraisemblance sur la grille des paramètres",
-       subtitle = "Le point rouge correspond à la solution GLM") +
-  theme_minimal()
-
-```
-
-```{r}
-plot(x, n1 / (n1+n0), pch=19, xlab="x", ylab="Proportion de succès")
-
-```
-
-
-```{r}
-library(ggplot2)
-
-# Points donnés
-p1 <- c(beta0 = -50, beta1 = 28)
-p2 <- c(beta0 = -60, beta1 = 34)
-
-# Nombre de points le long de la droite
-n_pts <- 200
-
-# Générer la droite par interpolation linéaire
-beta0_seq <- seq(p1["beta0"], p2["beta0"], length.out = n_pts)
-beta1_seq <- seq(p1["beta1"], p2["beta1"], length.out = n_pts)
-
-# Calculer la log-vraisemblance le long de la droite
-loglik_seq <- sapply(1:n_pts, function(i) log_lik(c(beta0_seq[i], beta1_seq[i])))
-
-# Mettre dans un data frame
-df_line <- data.frame(beta0 = beta0_seq, beta1 = beta1_seq, loglik = loglik_seq)
-
-# Tracer
-ggplot(df_line, aes(x = beta0, y = beta1, fill = loglik)) +
-  geom_tile() +
-  scale_fill_viridis_c() +
-  geom_point(aes(x = p1["beta0"], y = p1["beta1"]), color = "green", size = 3) +  # point 1
-  geom_point(aes(x = p2["beta0"], y = p2["beta1"]), color = "red", size = 3) +    # point 2
-  labs(title = "Évolution de la log-vraisemblance le long de la droite",
-       x = expression(beta[0]), y = expression(beta[1]), fill = "Log-likelihood") +
-  theme_minimal()
-
+c(beta_H1[N], beta_H2[N])
 ```
 
 #### MLE Estimators
 
 ```{r}
-c(-56.5,32)
+resu <- glm(cbind(n1, n0) ~ x, family=binomial(link="probit"))
+resu$coefficient
 ```
-
 ### Predictions
 
 $$(y_j, x_j)^{\perp}, \pi_j := P(Y_{ij} = 1 | x_j) =^{logit} \frac{e^{\beta_0 + \beta_1 x_j}}{1+e^{\beta_0 + \beta_1 x_j}}$$
