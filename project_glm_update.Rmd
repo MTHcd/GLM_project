@@ -22,17 +22,16 @@ n0 <- c(59,60,62,56,63,59,62,60) - n1
 # Theoretical Part
 
 ## Logit Model
+
 $$log(\frac{p}{1-p})=\beta_1+\beta_2x \Leftrightarrow p(y=1|x) = \frac{e^{\beta_1 + \beta_2x}}{1+e^{\beta_1 + \beta_2x}}$$
 
-
 ### Likelihood function
-
 
 #### Likelihood for logit model
 
 $$l((x_k,n_k)_k; \beta)=\prod_{j=1}^k(\prod_{i=1}^{n_j}(\pi_j)^{y_{ij}}(1-\pi_j)^{1-y_{ij}})$$
 
-$$l((x_k,n_k)_k; \beta)=\prod_{j=1}^k(\prod_{i=1}^{n_j}(\frac{e^{\beta_1+\beta_2x_j}}{1 + e^{\beta_1+\beta_2x_j}})^{y_{ij}}(\frac{1}{1 + e^{\beta_1+\beta_2x_j}})^{1-y_{ij}})$$ 
+$$l((x_k,n_k)_k; \beta)=\prod_{j=1}^k(\prod_{i=1}^{n_j}(\frac{e^{\beta_1+\beta_2x_j}}{1 + e^{\beta_1+\beta_2x_j}})^{y_{ij}}(\frac{1}{1 + e^{\beta_1+\beta_2x_j}})^{1-y_{ij}})$$
 
 $$l((x_k,n_k)_k; \beta)=\prod_{j=1}^k(\frac{e^{\beta_1+\beta_2x_j}}{1 + e^{\beta_1+\beta_2x_j}})^{n_j^1}(\frac{1}{1 + e^{\beta_1+\beta_2x_j}})^{n_j^0}$$
 
@@ -40,14 +39,11 @@ $$l((x_k,n_k)_k; \beta) =\prod_{j=1}^k(\frac{e^{\beta_1+\beta_2x_j}}{1 + e^{\bet
 
 #### Log-Likelihood
 
-
 $$L((x_k,n_k)_k; \beta) = \sum_{j=1}^klog((\frac{e^{\beta_1+\beta_2x_j}}{1 + e^{\beta_1+\beta_2x_j}})^{n_j^1}) + log((\frac{1}{1 + e^{\beta_1+\beta_2x_j}})^{n_j^0})$$
 
 $$L((x_k,n_k)_k; \beta) = \sum_{j=1}^k-n_j^1log(1 + e^{-(\beta_1+\beta_2x_j)}) - {n_j^0}(\beta_1+\beta_2x_j)-n^0_jlog(1 + e^{-(\beta_1+\beta_2x_j)}))$$
 
-
 ### Score and Fisher Information
-
 
 #### Score Vector U
 
@@ -55,9 +51,7 @@ $$U(\beta) = \sum_{j=1}^k(n^1_j(1-\pi_j) -n^0_j\pi_j, x_j(n^1_j(1-\pi_j) -n^0_j\
 
 #### Fisher Information
 
-
-$$I_{11}=-\frac{\partial^2 L}{\partial \beta_1^2} = \frac{\partial L}{\partial \beta_1}$$
-$$I_{22}=-\frac{\partial^2 L}{\partial \beta_2^2} = \sum_{j=1}^k x_j^2(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)})$$
+$$I_{11}=-\frac{\partial^2 L}{\partial \beta_1^2} = \frac{\partial L}{\partial \beta_1}$$ $$I_{22}=-\frac{\partial^2 L}{\partial \beta_2^2} = \sum_{j=1}^k x_j^2(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)})$$
 
 $$I_{12}=-\frac{\partial^2 L}{\partial \beta_1 \beta_2} = \sum_{j=1}^k x_j(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)})$$
 
@@ -66,12 +60,9 @@ $$I_{21}=I_{12}$$
 $$I(\beta)^{-1} =  \frac{\begin{bmatrix}\sum_{j=1}^k x_j^2(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)} &-\sum_{j=1}^k x_j(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)})\\-\sum_{j=1}^k x_j(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)})& \sum_{j=1}^k(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)}) 
 \end{bmatrix}}{(\sum_{j=1}^k x_j^2(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)}))(\sum_{j=1}^k(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)})) - (\sum_{j=1}^k x_j(\frac{n^1_j(1-\pi_j)}{\pi_j} -\frac{n^0_j\pi_j}{(1-\pi_j)}))^2}$$
 
-
 ### Newton-Raphson Algorithm
 
-
 #### Recurrence relation for Beta estimation
-
 
 $$ \beta_{n+1} = \beta_n + (I(\beta_n))^{-1}U(\beta_n), n \ge 1$$
 
@@ -90,7 +81,6 @@ $$ \beta_{n+1} = \beta_n + (I(\beta_n))^{-1}U(\beta_n), n \ge 1$$
 
 ### Adjustments Tests
 
-
 #### Deviance D
 
 $$D = 2[L(\beta_{max};y) - L(\beta;y)] $$
@@ -105,7 +95,7 @@ $$ X^2 = \sum_{j=1}^k \frac{(y_j - n_j^1\hat{\pi}_j)^2}{n_j^1\hat{\pi}_j(1-\hat{
 
 We obtain:
 
-$$X^2 = \sum_{j=1}^k \frac{(y_j - (n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}))^2}{(n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})(\frac{1}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})} $$
+$$X^2 = \sum_{j=1}^k \frac{(y_j - n_j (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}))^2}{n_j (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})(\frac{1}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})} $$
 
 #### Deviance Residuals
 
@@ -113,26 +103,21 @@ $$d_j = sign(y_j - (n_j^1+n_j^0)\hat{\pi}_j)\sqrt{2[y_jlog(\frac{y_j}{(n_j^1+n_j
 
 #### Pearson Residuals
 
-
 $$r_j = \frac{y_j - \hat{\pi}_j}{\sqrt{\hat{Var(y_j)}}}$$
 
-$$ r_j = \frac{y_j - (n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})}{\sqrt{(n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})(\frac{1}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})}} $$
+$$ r_j = \frac{y_j - n_j (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})}{\sqrt{n_j (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})(\frac{1}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})}} $$
 
 ## Probit Model
 
-
-$$p=\phi(\beta_1+\beta_2x)$$
+$$p=\Phi(\beta_1+\beta_2x), Phi(x) = \int_{-\infty}^x \frac{e^{-\frac{y^2}{2}}}{\sqrt{2\pi}}dy$$
 
 ### Likelihood function
 
-
 #### Likelihood for logit model
 
-
-$$\prod_{j=1}^k(\Phi(x_j\beta)^{n^1_j}(1 - \Phi(x_j\beta))^{n^0_j}$$
+$$\prod_{j=1}^k(\Phi(x_j\beta))^{n^1_j}(1 - \Phi(x_j\beta))^{n^0_j}$$
 
 #### Log-Likelihood
-
 
 $$L(X,\beta_1, \beta_2) = \sum_{j=1}^k (n^1_jlog(\Phi(x_j\beta)) + n^0_jlog(1- \Phi(x_j\beta)))$$
 
@@ -140,20 +125,15 @@ $$L(X,\beta_1, \beta_2) = \sum_{j=1}^k (n^1_jlog(\int_0^{\beta_0 + \beta_1x_j}\f
 
 ### Score and Fisher Information
 
-
 #### Score Vector U
-
 
 $$U(\beta) = (\sum_{j=1}^k \frac{e^{-\frac{1}{2}}(n^1_j -n^0_j)}{\sqrt{2\pi}\Phi(\beta_1+\beta_2x_j)}, \sum_{j=1}^k\frac{e^{-\frac{-x_j^2}{2}}(n^1_j -n^0_j)}{\sqrt{2\pi}\Phi(\beta_1 + \beta_2 x_j)})$$
 
-
 #### Fisher Information
-
 
 $$I(\beta) =  \begin{bmatrix} \sum_{j=1}^k\frac{e^{-1}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2} & \sum_{j=1}^k\frac{e^{-\frac{1}{2}(x_j^2+1)}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2}\\
 \sum_{j=1}^k\frac{e^{-\frac{1}{2}(x_j^2+1)}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2} & \sum_{j=1}^k\frac{e^{-x_j^2}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2}
 \end{bmatrix}$$
-
 
 $$I(\beta)^{-1} =  \frac{\begin{bmatrix} \sum_{j=1}^k\frac{e^{-x_j^2}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2} & -\sum_{j=1}^k\frac{e^{-\frac{1}{2}(x_j^2+1)}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2}\\
 -\sum_{j=1}^k\frac{e^{-\frac{1}{2}(x_j^2+1)}(n^1_j - n^0_j)}{2\pi\Phi(\beta_1 + \beta_2 x_j)^2} & 
@@ -180,9 +160,7 @@ $$ \beta_{n+1} = \beta_n + (I(\beta_n))^{-1}U(\beta_n), n \ge 1$$
 
 ```
 
-
 ### Adjustments Tests
-
 
 #### Deviance D
 
@@ -194,57 +172,46 @@ General Formula:
 
 $$S_w = \sum_{j=1}^k\frac{(y_j - E(y_j))^2}{Var(y_j)}$$
 
-$$ X^2 = \sum_{j=1}^k \frac{(y_j - n_j^1\hat{\pi}_j)^2}{n_j^1\hat{\pi}_j(1-\hat{\pi}_j)} \sim \chi^2_{(k-2)}$$
+$$ X^2 = \sum_{j=1}^k \frac{(y_j - n_j\hat{\pi}_j)^2}{n_j\hat{\pi}_j(1-\hat{\pi}_j)} \sim \chi^2_{(k-2)}$$
 
 We obtain:
 
-$$X^2 = \sum_{j=1}^k \frac{(y_j - (n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}))^2}{(n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})(\frac{1}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})} $$
+$$X^2 = \sum_{j=1}^k \frac{(y_j - n_j (\Phi(x_j\hat{\beta})))^2}{n_j(\Phi(x_j\hat{\beta}))(1- \Phi(x_j\hat{\beta}))} $$
 
 #### Deviance Residuals
 
-$$d_j = sign(y_j - (n_j^1+n_j^0)\hat{\pi}_j)\sqrt{2[y_jlog(\frac{y_j}{(n_j^1+n_j^0)\hat{\pi}_j})+((n_j^1+n_j^0)-y_j)log(\frac{(n_j^1+n_j^0)-y_j}{(n_j^1+n_j^0)(1 - \hat{\pi}_j)})]}$$
+$$d_j = sign(y_j - n_j\hat{\pi}_j)\sqrt{2[y_jlog(\frac{y_j}{(n_j)\hat{\pi}_j})+(n_j-y_j)log(\frac{n_j-y_j}{(n_j)(1 - \hat{\pi}_j)})]}$$
 
 #### Pearson Residuals
 
-
-$$r_j = \frac{y_j - \hat{\pi}_j}{\sqrt{\hat{Var(y_j)}}}$$
-
-$$ r_j = \frac{y_j - (n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})}{\sqrt{(n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})(\frac{1}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})}} $$
+$$r_j = \frac{y_j - n_j\hat{\pi}_j}{\sqrt{\hat{Var(y_j)}}}$$
 
 
 ## Cloglog Model
 
-
-$$log(\frac{p}{1-p})=\beta_1+\beta_2x \Leftrightarrow p(y=1|x) = \frac{e^{\beta_1 + \beta_2x}}{1+e^{\beta_1 + \beta_2x}}$$
+$$log(-log(1-p))=\beta_1+\beta_2x \Leftrightarrow p(y=1|x) = 1 - e^{-e^{(\beta_1 + \beta_2 x)}}$$
 
 ### Likelihood function
 
-
 #### Likelihood for logit model
-
 
 $$l((x_k,n_k)_k; \beta)= \prod_{j=1}^k (1 - e^{-e^{(\beta_1 + \beta_2 x_j)}})^{n^1_j}(e^{-e^{(\beta_1 + \beta_2 x_j)}})^{n^0_j}$$
 
 #### Log-Likelihood
 
-
 $$L(X,\beta_1, \beta_2) = log(\prod_{j=1}^k (1 - e^{-e^{(\beta_1 + \beta_2 x_j)}})^{n^1_j}(e^{-e^{(\beta_1 + \beta_2 x_j)}})^{n^0_j}) = \sum_{j=1}^k (n^1_j log(\pi_j) + n^0_jlog(1-\pi_j))$$
 
 ### Score and Fisher Information
 
-
 #### Score Vector U
-
 
 $$U(\beta) = (\sum_{j=1}^k\frac{e^{-e^{(\beta_1 + \beta_2 x_j)}+(\beta_1 + \beta_2 x_j)}}{(1 - e^{-e^{\beta_1 + \beta_2 x_j}})}(n^1_j-n^0_j), \sum_{j=1}^k\frac{x_je^{-e^{(\beta_1 + \beta_2 x_j)}+(\beta_1 + \beta_2 x_j)}}{(1 - e^{-e^{\beta_1 + \beta_2 x_j}})}(n^1_j-n^0_j))$$
 
 #### Fisher Information
 
-
 $$I(\beta) =  \begin{bmatrix} \sum_{j=1}^k\frac{(e^{-e^{(\beta_1 + \beta_2 x_j)}+(\beta_1 + \beta_2 x_j)})(e^{-e^{\beta_1 + \beta_2 x_j}} + e^{\beta_1 + \beta_2 x_j} - 1)}{(1 - e^{-e^{\beta_1 + \beta_2 x_j}})^2}(n^1_j-n^0_j) & \sum_{j=1}^k\frac{x_j(e^{-e^{(\beta_1 + \beta_2 x_j)}+(\beta_1 + \beta_2 x_j)})(e^{-e^{\beta_1 + \beta_2 x_j}} + e^{\beta_1 + \beta_2 x_j} - 1)}{(1 - e^{-e^{\beta_1 + \beta_2 x_j}})^2}(n^1_j-n^0_j)\\
 \sum_{j=1}^k\frac{x_j(e^{-e^{(\beta_1 + \beta_2 x_j)}+(\beta_1 + \beta_2 x_j)})(e^{-e^{\beta_1 + \beta_2 x_j}} + e^{\beta_1 + \beta_2 x_j} - 1)}{(1 - e^{-e^{\beta_1 + \beta_2 x_j}})^2}(n^1_j-n^0_j) & \sum_{j=1}^k\frac{x_j^2(e^{-e^{(\beta_1 + \beta_2 x_j)}+(\beta_1 + \beta_2 x_j)})(e^{-e^{\beta_1 + \beta_2 x_j}} + e^{\beta_1 + \beta_2 x_j} - 1)}{(1 - e^{-e^{\beta_1 + \beta_2 x_j}})^2}(n^1_j-n^0_j)
 \end{bmatrix}$$
-
 
 $$I(\beta) =  \begin{bmatrix} \sum_{j=1}^k\frac{(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)}{(1 - e^{-\mu_j(\beta)})^2}(n^1_j - n^0_j) & \sum_{j=1}^k\frac{x_j(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)}{(1 - e^{-\mu_j(\beta)})^2}(n^1_j - n^0_j)\\
 \sum_{j=1}^k\frac{x_j(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)}{(1 - e^{-\mu_j(\beta)})^2}(n^1_j - n^0_j) & \sum_{j=1}^k\frac{x_j^2(e^{-\mu_j(\beta)}\mu_j(\beta))(e^{-\mu_j(\beta)} + \mu_j(\beta) - 1)}{(1 - e^{-\mu_j(\beta)})^2}(n^1_j - n^0_j)
@@ -256,9 +223,7 @@ $$I(\beta)^{-1} =  \frac{\begin{bmatrix} \sum_{j=1}^k\frac{x_j^2(e^{-\mu_j(\beta
 
 ### Newton-Raphson Algorithm
 
-
 #### Recurrence relation for Beta estimation
-
 
 $$ \beta_{n+1} = \beta_n + (I(\beta_n))^{-1}U(\beta_n), n \ge 1$$
 
@@ -276,9 +241,7 @@ $$ \beta_{n+1} = \beta_n + (I(\beta_n))^{-1}U(\beta_n), n \ge 1$$
 
 ```
 
-
 ### Adjustments Tests
-
 
 #### Deviance D
 
@@ -294,32 +257,25 @@ $$ X^2 = \sum_{j=1}^k \frac{(y_j - n_j^1\hat{\pi}_j)^2}{n_j^1\hat{\pi}_j(1-\hat{
 
 We obtain:
 
-$$X^2 = \sum_{j=1}^k \frac{(y_j - (n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}))^2}{(n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})(\frac{1}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})} $$
+$$X^2 = \sum_{j=1}^k \frac{(y_j - n_j (1 - e^{-e^{(\beta_1 + \beta_2 x_j)}}))^2}{n_j (1 - e^{-e^{(\beta_1 + \beta_2 x_j)}})(e^{-e^{(\beta_1 + \beta_2 x_j)}}} $$
 
 #### Deviance Residuals
 
-$$d_j = sign(y_j - (n_j^1+n_j^0)\hat{\pi}_j)\sqrt{2[y_jlog(\frac{y_j}{(n_j^1+n_j^0)\hat{\pi}_j})+((n_j^1+n_j^0)-y_j)log(\frac{(n_j^1+n_j^0)-y_j}{(n_j^1+n_j^0)(1 - \hat{\pi}_j)})]}$$
+$$d_j = sign(y_j - n_j\hat{\pi}_j)\sqrt{2[y_jlog(\frac{y_j}{n_j\hat{\pi}_j})+(n_j-y_j)log(\frac{n_j-y_j}{n_j(1 - \hat{\pi}_j)})]}$$
 
 #### Pearson Residuals
 
-
 $$r_j = \frac{y_j - \hat{\pi}_j}{\sqrt{\hat{Var(y_j)}}}$$
-
-$$ r_j = \frac{y_j - (n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})}{\sqrt{(n_j^1+n_j^0) (\frac{e^{\hat{\beta}_0 + \hat{\beta}_1x_j}}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})(\frac{1}{1 + e^{\hat{\beta}_0 + \hat{\beta}_1x_j}})}} $$
 
 
 
 # Pratical Part
 
-
 ## Logit Model
-
 
 ### Data visualization
 
-
 #### Plot
-
 
 ```{r}
 library(ggplot2)
@@ -338,7 +294,6 @@ df %>% ggplot(aes(x=x, y=p)) +
     y="Observed proportion p"
   )
 ```
-
 
 ```{r}
 mean_val <- mean(x)
@@ -365,9 +320,7 @@ ggplot(df, aes(x=index, y=value)) +
 
 The relation is increasing at different rate depending on x. It is a non linear relation.
 
-
 ### Parameter Estimation
-
 
 #### Newton-Raphson Algorithm Implementation up to Convergence
 
@@ -462,28 +415,20 @@ I <- function(beta) {
 ## EMV Algo
 
 EMV_algo <- function(beta, n) {
-  new_beta <- beta + (I(beta)%*%U(beta))
-  return(new_beta)
-}
-
-EMV_algo_lambda <- function(beta, n) {
-  ll_old <- log_lik(beta)
-  step <- 1
-  if (n > 20000) {
-    param <- sqrt(lambda/n)
-  } else {
-    param <- lambda/sqrt(n)
+  new_beta <- beta + (I(beta))%*%(U(beta))
+  if (log_lik(beta) < log_lik(new_beta)) {
+    return(new_beta)
   }
-  for (i in 1:10) {
-    beta_check <- beta + param*step*(I(beta)%*%U(beta))
-    ll_new <- log_lik(beta_check)
-    if (all(is.finite(beta_check)) && ll_new >= ll_old) {
-      break
+  else if (log_lik(beta) >= log_lik(new_beta)){
+      step <- 1
+      repeat {
+        new_beta <- beta + (I(beta))%*%(U(beta))
+        if (log_lik(new_beta) > log_lik(beta) || step < 1e-6)
+          break
+        step <- step / 2
+      }
+      return(new_beta)
     }
-    step <- step / 2
-  }
-  beta_star <- beta_check
-  return(beta_star)
 }
 
 EMV_algo_stoch <- function(beta, n, index) {
@@ -618,7 +563,6 @@ ggplot(ll_grid, aes(x = beta0, y = beta1, fill = loglik)) +
 
 ```
 
-
 ```{r}
 b0_seq <- seq(-5, 5, length.out =10)
 b1_seq <- seq(-5, 5, length.out = 10)
@@ -735,7 +679,6 @@ fig
 
 ```
 
-
 ```{r}
 library(ggplot2)
 #install.packages("viridis")
@@ -769,7 +712,6 @@ ggplot(ll_grid, aes(x = beta0, y = beta1, fill = loglik)) +
 plot(x, n1 / (n1+n0), pch=19, xlab="x", ylab="Proportion de succès")
 
 ```
-
 
 ```{r}
 library(ggplot2)
@@ -851,9 +793,7 @@ ggplot(df_plot, aes(x = x, y = value, color = type)) +
 
 ### Result Visualisation
 
-
-#### Plotting observed proportions vs predicted proportions depending on dose X 
-
+#### Plotting observed proportions vs predicted proportions depending on dose X
 
 ```{r}
 df_plot <- data.frame(
@@ -871,13 +811,11 @@ ggplot(df_plot, aes(x = x, y = value, color = type)) +
 
 ```
 
-
 #### Commenting on adjustment quality
 
 High adjustment quality for tails; low adjustment quality in between.
 
-### Diagnostics 
-
+### Diagnostics
 
 #### Computing Deviance
 
@@ -924,7 +862,6 @@ df %>% ggplot(aes(x=x, y=p)) +
   )
 ```
 
-
 ```{r}
 mean_val <- mean(x)
 sd_val <- sd(x)
@@ -950,9 +887,7 @@ ggplot(df, aes(x=index, y=value)) +
 
 The relation is increasing at different rate depending on x. It is a non linear relation.
 
-
 ### Parameter Estimation
-
 
 #### Newton-Raphson Algorithm Implementation up to Convergence
 
@@ -963,7 +898,6 @@ log_lik_prob <- function(beta) {
   return(sum(n1*log(pnorm(xbeta)+eps)+n0*log(1-pnorm(xbeta)+eps)))
 }
 ```
-
 
 ```{r}
 library(ggplot2)
@@ -991,7 +925,6 @@ ggplot(ll_grid, aes(x = beta0, y = beta1, fill = log_lik_prob)) +
 
 
 ```
-
 
 ```{r}
 library(ggplot2)
@@ -1137,9 +1070,7 @@ Y
 
 ### Result Visualisation
 
-
-#### Plotting observed proportions vs predicted proportions depending on dose X 
-
+#### Plotting observed proportions vs predicted proportions depending on dose X
 
 ```{r}
 df_plot <- data.frame(
@@ -1156,12 +1087,11 @@ ggplot(df_plot, aes(x = x, y = value, color = type)) +
        x = "x", y = "Proportion")
 ```
 
-
 #### Commenting on adjustment quality
 
 High quality adjustment
 
-### Diagnostics 
+### Diagnostics
 
 #### Computing Deviance
 
@@ -1184,7 +1114,6 @@ sum(residuals(resu, type="pearson")^2)
 # bonne adéquation globale
 
 ```
-
 
 ## Cloglog Model
 
@@ -1209,7 +1138,6 @@ df %>% ggplot(aes(x=x, y=p)) +
     y="Observed proportion p"
   )
 ```
-
 
 ```{r}
 mean_val <- mean(x)
@@ -1236,11 +1164,10 @@ ggplot(df, aes(x=index, y=value)) +
 
 The relation is increasing at different rate depending on x. It is a non linear relation.
 
-
 ### Parameter Estimation
 
-
 #### Newton-Raphson Algorithm Implementation up to Convergence
+
 ```{r}
 cloglog_prob <- function(beta) {
   return(1-exp(-exp(beta[1]+x*beta[2])))
@@ -1250,7 +1177,6 @@ log_lik_cloglog <- function(beta) {
   return(sum(n1*log(cloglog_prob(beta)+eps)+n0*log(1-cloglog_prob(beta)+eps)))
 }
 ```
-
 
 ```{r}
 library(ggplot2)
@@ -1277,7 +1203,6 @@ ggplot(ll_grid, aes(x = beta0, y = beta1, fill = log_lik_cloglog)) +
   labs(title = "Log-vraisemblance sur la grille des paramètres")
 
 ```
-
 
 ```{r}
 library(ggplot2)
@@ -1322,20 +1247,16 @@ mu_j <- function(beta) {
 I_cloglog <- function(beta) {
   com <- matrix(ncol=2, nrow=2)
   p <- cloglog_prob(beta)
-  com[1,1] <- sum(((x^2)*(n1-n0)*exp(-mu_j(beta))*mu_j(beta)(exp(-mu_j(beta)+mu_j(beta)-1)))/(1-p)^2)
-  com[1,2] <- -sum((x*(n1-n0)*exp(-mu_j(beta))*mu_j(beta)(exp(-mu_j(beta)+mu_j(beta)-1)))/(1-p)^2)
+  com[1,1] <- sum(((x^2)*(n1-n0)*exp(-mu_j(beta))*mu_j(beta)*(exp(-mu_j(beta)+mu_j(beta)-1)))/(1-p)^2)
+  com[1,2] <- -sum((x*(n1-n0)*exp(-mu_j(beta))*mu_j(beta)*(exp(-mu_j(beta)+mu_j(beta)-1)))/(1-p)^2)
   com[2,1] <- com[1,2]
-  com[2,2] <- sum(((n1-n0)*exp(-mu_j(beta))*mu_j(beta)(exp(-mu_j(beta)+mu_j(beta)-1)))/(1-p)^2)
+  com[2,2] <- sum(((n1-n0)*exp(-mu_j(beta))*mu_j(beta)*(exp(-mu_j(beta)+mu_j(beta)-1)))/(1-p)^2)
   det <- (com[1,1]*com[2,2] - com[1,2]^2)
   return(com/(det+eps))
 }
 
-## EMV Algo
-
-EMV_algo_cloglog <- function(beta, n) {
-  # if huge step but improvement, let it continue
-  # if huge step but wrong movement, apply step size
-  # if step size implies wrong movement, stop
+## 
+AlgoEMV_algo_cloglog <- function(beta, n) {
   new_beta <- beta + (I_cloglog(beta))%*%(U_cloglog(beta))
   if (log_lik_cloglog(beta) < log_lik_cloglog(new_beta)) {
     return(new_beta)
@@ -1343,14 +1264,15 @@ EMV_algo_cloglog <- function(beta, n) {
   else if (log_lik_cloglog(beta) >= log_lik_cloglog(new_beta)){
       step <- 1
       repeat {
-        new_beta <- beta + step * I_cloglog(beta) %*% U_cloglog(beta)
+        new_beta <- beta + (I_cloglog(beta))%*%(U_cloglog(beta))
         if (log_lik_cloglog(new_beta) > log_lik_cloglog(beta) || step < 1e-6)
           break
         step <- step / 2
       }
       return(new_beta)
     }
-  }
+}
+
 ##EMV call
 
 resu_EMV_Batch_cloglog <- function(beta_H1, beta_H2) {
@@ -1374,8 +1296,8 @@ eps <- 1e-8
 nu <- 1e-6
 N <- 100000
 ## initial values
-beta_1_init <- -30
-beta_2_init <- 20
+beta_1_init <- -39
+beta_2_init <- 22
 
 ## batch
 beta_H1 <- rep(NA, N)
@@ -1396,6 +1318,7 @@ c(beta_H1[N], beta_H2[N])
 resu <- glm(cbind(n1, n0) ~ x, family=binomial(link="probit"))
 resu$coefficient
 ```
+
 ### Predictions
 
 $$(y_j, x_j)^{\perp}, \pi_j := P(Y_{ij} = 1 | x_j) =^{logit} \frac{e^{\beta_0 + \beta_1 x_j}}{1+e^{\beta_0 + \beta_1 x_j}}$$
@@ -1438,9 +1361,7 @@ ggplot(df_plot, aes(x = x, y = value, color = type)) +
 
 ### Result Visualisation
 
-
-#### Plotting observed proportions vs predicted proportions depending on dose X 
-
+#### Plotting observed proportions vs predicted proportions depending on dose X
 
 ```{r}
 df_plot <- data.frame(
@@ -1458,13 +1379,11 @@ ggplot(df_plot, aes(x = x, y = value, color = type)) +
 
 ```
 
-
 #### Commenting on adjustment quality
 
 High adjustment quality for tails; low adjustment quality in between.
 
-### Diagnostics 
-
+### Diagnostics
 
 #### Computing Deviance
 
@@ -1487,33 +1406,22 @@ sum(residuals(resu, type="pearson")^2)
 # bonne adéquation globale
 
 ```
-
 # Model Comparison
-
 
 ### Synthesis of results
 
-
 #### Table of Deviance and Pearson Statistics Deviance for Logit, Probit and Cloglog Models
 
-
-#### Estimators Comparisons 
-
+#### Estimators Comparisons
 
 ### Model Selection
 
-
 #### Selection criterion based on deviance
-
 
 #### Pros and Cons of each model
 
-
 ### Conclusion
-
 
 #### Which model most adapted to data?
 
-
 #### Discussion on Model Selection
-
