@@ -1,0 +1,83 @@
+---
+title: "Partie Théorique. Modèle Logit"
+author: "MC, MF"
+date: "2025-11-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Logit Model
+
+$$log(\frac{p}{1-p})=\beta_1+\beta_2x \Leftrightarrow p(y=1|x) = \frac{e^{\beta_1 + \beta_2x}}{1+e^{\beta_1 + \beta_2x}}$$
+
+### Likelihood function
+
+#### Likelihood for logit model
+
+$$n_j = n_j^1 + n_j^0 $$
+
+$$L((n_k^1|x_k)_k; \beta)=^{\perp (n_k^1|x_k) \sim B(n_k, \pi_k)}\prod_{j=1}^k\binom{n_j}{n_j^1}(\frac{e^{\beta_1+\beta_2x_j}}{1 + e^{\beta_1+\beta_2x_j}})^{n_j^1}(\frac{1}{1 + e^{\beta_1+\beta_2x_j}})^{n_j^0}$$
+
+#### Log-Likelihood
+
+$$l((n_k^1|x_k)_k; \beta) =^{log(L)} \sum_{j=1}^klog((\frac{e^{\beta_1+\beta_2x_j}}{1 + e^{\beta_1+\beta_2x_j}})^{n_j^1}) + log((\frac{1}{1 + e^{\beta_1+\beta_2x_j}})^{n_j^0} + log(\binom{n^1_j+n^0_j}{n_j^1})$$
+
+$$l((n_k^1|x_k)_k; \beta) = \sum_{j=1}^k-n_j^1log(1 + e^{-(\beta_1+\beta_2x_j)}) - {n_j^0}(\beta_1+\beta_2x_j)-n^0_jlog(1 + e^{-(\beta_1+\beta_2x_j)})) + log(\binom{n^1_j+n^0_j}{n_j^1})$$
+
+### Score and Fisher Information
+
+#### Score Vector U
+
+$$U(\beta) = \sum_{j=1}^k(n^1_j(1-\pi_j) -n^0_j\pi_j, x_j(n^1_j(1-\pi_j) -n^0_j\pi_j))$$
+
+#### Fisher Information
+
+$$\frac{\partial \pi_j}{\beta_1} = \frac{e^{-(\beta_1 + \beta_2x_j)}}{(1+e^{-(\beta_1 + \beta_2x_j)})^2} = \pi_j(1-\pi_j)$$
+
+$$I_{11}=\mathbf{E}[-\frac{\partial^2 L}{\partial \beta_1^2}] = \sum_{j=1}^k n_j\pi_j(1-\pi_j)$$ 
+
+$$I_{22}=\mathbf{E}[-\frac{\partial^2 L}{\partial \beta_2^2}] = \sum_{j=1}^k x_j^2n_j\pi_j(1-\pi_j)$$
+
+$$I_{12}=\mathbf{E}[-\frac{\partial^2 L}{\partial \beta_1 \beta_2}] = \sum_{j=1}^k x_jn_j\pi_j(1-\pi_j)$$
+
+$$I_{21}=I_{12}$$
+
+### Newton-Raphson Algorithm
+
+#### Recurrence relation for Beta estimation
+
+$$ \beta_{n+1} = \beta_n + (I(\beta_n))^{-1}U(\beta_n), n \ge 1$$
+
+#### Initial values
+
+On procède à une représentation de la fonction de log vraisemblance selon une approche en courbes de niveau puis on sélectionne les valeurs initiales les plus proches des niveaux max.
+
+### Adjustments Tests
+
+#### Deviance D
+
+$$D = 2[L(\beta_{max};n^1) - L(\beta;n^1)] $$
+
+$$L(\beta_{max}; n^1) = \sum_{j=1}^k [log(\binom{n_j}{n_j^1}) + n_j^1log(\frac{n_j^1}{n_j})+n_j^0log(\frac{n_j^0}{n_j})] $$
+$$L(\beta; n^1) = \sum_{j=1}^k [log(\binom{n_j}{n_j^1}) + n_j^1log(\pi_j)+n_j^0log(1 - \pi_j)] $$
+
+$$D = 2[\sum_{j=1}^k n_j^1log(\frac{(\frac{n_j^1}{n_j})}{\pi_j})+n_j^0log(\frac{(\frac{n_j^0}{n_j})}{(1-\pi_j)})]$$
+
+#### Pearson Statistics
+
+General Formula:
+
+$$X^2 = \sum_{j=1}^k\frac{(n_j^1 - E(n_j^1))^2}{Var(n_j^1)}$$
+
+$$ \hat{X}^2 = \sum_{j=1}^k \frac{(n_j^1 - n_j\hat{\pi}_j)^2}{n_j\hat{\pi}_j(1-\hat{\pi}_j)} \sim \chi^2_{(k-2)}$$
+
+#### Deviance Residuals (McCullagh, Nedler (1989))
+
+$$\hat{d}_j = sign(n_j^1 - n_j\hat{\pi}_j)\sqrt{2[n_j^1log(\frac{n_j^1}{n_j\hat{\pi}_j})+n_j^0log(\frac{n_j^0}{n_j(1 - \hat{\pi}_j)})]}$$
+#### Pearson Residuals
+
+$$\hat{r}_j = \frac{n_j^1 - n_j\hat{\pi}_j}{\sqrt{n_j\hat{\pi}_j(1-\hat{\pi}_j)}}$$
+
